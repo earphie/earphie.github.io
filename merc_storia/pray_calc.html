@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>メルクストーリア 祈り計算機</title>
+<meta content='width=device-width; initial-scale=1; user-scalable=0' name='viewport'>
+<meta content='yes' name='apple-mobile-web-app-capable'>
+<meta content='black' name='apple-mobile-web-app-status-bar-style'>
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+<style type="text/css">
+div.container {
+  margin: 0.5em;
+}
+#seed-hp {
+  width: 7em;
+}
+.ui-slider-track {
+  margin-left: 9em;
+}
+.result-body {
+  text-align: center;
+}
+#pray-result {
+  font-size: 6em;
+}
+div.notice {
+  padding: 0.8em 0px;
+}
+ul.notice {
+  color: gray;
+  margin-right: 1em;
+}
+ul.notice li {
+  list-style-type: none;
+}
+ul.notice li:before {
+  content: "※";
+  margin-left: -1em;
+}
+</style>
+<script type="text/javascript">
+seed_table = [
+  { hp: 160000, name: 'ワイバーン' },
+  { hp: 150000, name: 'アースドラゴン' },
+  { hp: 147000, name: 'ニグレット' },
+  { hp: 144000, name: 'グラニアゼウス' },
+  { hp: 137000, name: 'ジャバウォック' },
+  { hp: 127000, name: 'ファーブニール' },
+  { hp: 120000, name: 'メッゾドラニカ' },
+  { hp:  94000, name: 'ユニルス' },
+];
+
+var set_seeds = function() {
+  for (var i in seed_table) {
+    $('#seed').append('<option value="' + i + '">' + seed_table[i].name + '</option>');
+  }
+  $('#seed').val("0");
+};
+
+$(function() {
+  var reset_hp = function() {
+    var seed, wave, oldval, min, max;
+    seed = seed_table[$('#seed').val()];
+    wave = $('input[name="wave"]:checked').val();
+    oldval = $('#seed-hp').val();
+    min = seed.hp * (1 + (wave - 1)*0.2)
+    max = min*4;
+
+    $('#seed-hp').attr('min', min);
+    $('#seed-hp').attr('max', max);
+    $('#seed-hp').attr('step', min/100);
+    $('#seed-hp').val(Math.min(Math.max(oldval, min), max));
+    $('#seed-hp').slider('refresh');
+  };
+  $('input[name="wave"]').on('click', reset_hp);
+  $('#seed').on('change', reset_hp);
+
+  var calc = function() {
+    var seed, hp, obshp, wave, result;
+    seed = seed_table[$('#seed').val()];
+    obshp = $('#seed-hp').val();
+    wave = $('input[name="wave"]:checked').val();
+
+    hp = seed.hp * (1 + (wave - 1)*0.2)
+    result = Math.max(Math.round((obshp/hp)*100) - 100, 0);
+    $("#pray-result").text(result);
+  };
+
+  $('input[name="wave"]').on('click', calc);
+  $('#seed').on('change', calc);
+  $('#seed-hp').on('change', calc);
+
+  reset_hp();
+});
+</script>
+</head>
+<body>
+<div class="container">
+  <h1>メルクストーリア 祈り計算機</h1>
+  <form class="form-horizontal" role="form">
+    <div data-role="fieldcontain">
+      <label>シード出現 Wave</label>
+      <fieldset data-role="controlgroup" data-type="horizontal">
+        <label><input type="radio" name="wave" id="wave1" value="1" checked>1</label>
+        <label><input type="radio" name="wave" id="wave2" value="2">2</label>
+        <label><input type="radio" name="wave" id="wave3" value="3">3</label>
+        <label><input type="radio" name="wave" id="wave4" value="4">4</label>
+        <label><input type="radio" name="wave" id="wave5" value="5">5</label>
+      </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+      <label for="seed">シードの種類</label>
+      <select name="seed" id="seed">
+      </select>
+    </div>
+    <div data-role="fieldcontain">
+      <label for="seed-hp">シードの Max HP</label>
+      <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
+      <script type="text/javascript">set_seeds();</script>
+    </div>
+    <div data-role="fieldcontain">
+      <label>予想祈り</label>
+      <p class="result-body"><span id="pray-result">0</span>%</p>
+    </div>
+    <div class="notice">
+      <label>注意事項</label>
+      <ul class="notice">
+        <li>サイズ 1.7 のシードモンスターを基準に計算しています。サイズが大きい場合、本来の祈り数よりも若干高く出ます。</li>
+      </ul>
+    </div>
+  </form>
+</div>
+</body>
+</html>
