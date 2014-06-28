@@ -75,11 +75,12 @@ $(function() {
     min = seed.hp * (1 + (wave - 1)*0.2)
     max = min*(maxpray + 100)/100;
 
-    $('#seed-hp').attr('min', min);
-    $('#seed-hp').attr('max', max);
-    $('#seed-hp').attr('step', min/100);
-    $('#seed-hp').val(Math.min(Math.max(oldval, min), max));
-    $('#seed-hp').slider('refresh');
+    $('#seed-hp')
+      .attr('min', min)
+      .attr('max', max)
+      .attr('step', min/100)
+      .val(Math.min(Math.max(oldval, min), max))
+      .slider('refresh');
   };
   $('input[name="wave"]').on('click', reset_hp);
   $('#seed').on('change', reset_hp);
@@ -99,15 +100,14 @@ $(function() {
   $('#seed').on('change', calc);
   $('#seed-hp').on('change', calc);
 
-  reset_hp();
-
   $('[data-step-hp]').on('tap', function() {
     var step, ohp;
     step = ($('#seed-hp').attr('min')*$(this).data('step-hp'))/100;
     ohp  = $('#seed-hp').val();
-    $('#seed-hp').val(Number(ohp) + step);
-    $('#seed-hp').slider('refresh');
+    $('#seed-hp').val(Number(ohp) + step).slider('refresh');
   });
+
+  reset_hp();
 });
 </script>
 </head>
