@@ -117,7 +117,7 @@ $(function() {
       </select>
     </div>
     <div data-role="fieldcontain">
-      <label for="seed-hp">シードの Max HP</label>
+      <label for="seed-hp">シードの最大体力</label>
       <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
       <script type="text/javascript">set_seeds();</script>
     </div>
@@ -126,9 +126,24 @@ $(function() {
       <p class="result-body"><span id="pray-result">0</span>%</p>
     </div>
     <div class="notice">
+      <label>概要</label>
+      <p><a href="http://mercstoria.happyelements.co.jp/">メルクストーリア</a>のギルドバトルにおいて、相手ギルドの「祈り」による防衛力上昇値を予想します。</p>
+    </div>
+    <div class="notice">
+      <label>使い方</label>
+      <ol class="usage">
+        <li>ギルドバトルで相手ギルドのアジトに出撃します。</li>
+        <li>ワイバーン、アースドラゴンなど、本ページで対応しているシードモンスターに出会ったときに、出現 Wave 数(何匹目か)と該当モンスターの最大体力を記憶します。</li>
+        <li>本ページで、出現 Wave 数と該当シードモンスターの種類をそれぞれ選択します。</li>
+        <li>「シードの最大体力」欄のスライダーを調整し、左側の数値が実際に出会ったシードの最大体力値と近い値になるようにします。</li>
+        <li>画面下部に表示される数値が、相手ギルドの祈りによる予想防衛値です。</li>
+      </ol>
+    </div>
+    <div>
       <label>注意事項</label>
       <ul class="notice">
-        <li>サイズ 1.7 のシードモンスターを基準に計算しています。サイズが大きい場合、本来の祈り数よりも若干高く出ます。</li>
+        <li>あくまで計算による予想値であって、正確な値ではありません。</li>
+        <li><a href="http://メルクストーリア.gamerch.com/">メルクストーリア - 癒術士と鈴のしらべ -攻略Wiki【メルスト攻略】</a>サイトに記載されているサイズ 1.7 のシードモンスターの最大体力を基準に計算しています。</li>
       </ul>
     </div>
   </form>
