@@ -29,45 +29,51 @@ div.container {
 div.notice {
   padding: 0.8em 0px;
 }
-ul.notice {
-  color: gray;
+ul, ol {
   margin-right: 1em;
 }
-ul.notice li {
+ul.notice > li {
   list-style-type: none;
 }
-ul.notice li:before {
+ul.notice > li:before {
   content: "※";
   margin-left: -1em;
 }
 </style>
 <script type="text/javascript">
-seed_table = [
-  { hp: 160000, name: 'ワイバーン' },
-  { hp: 150000, name: 'アースドラゴン' },
-  { hp: 147000, name: 'ニグレット' },
-  { hp: 144000, name: 'グラニアゼウス' },
-  { hp: 137000, name: 'ジャバウォック' },
-  { hp: 127000, name: 'ファーブニール' },
-  { hp: 120000, name: 'メッゾドラニカ' },
-  { hp:  94000, name: 'ユニルス' },
-];
+$(function() {
+  var seed_table = [
+    { hp: 160000, name: 'ワイバーン' },
+    { hp: 150000, name: 'アースドラゴン' },
+    { hp: 147000, name: 'ニグレット' },
+    { hp: 144000, name: 'グラニアゼウス' },
+    { hp: 137000, name: 'ジャバウォック' },
+    { hp: 127000, name: 'ファーブニール' },
+    { hp: 120000, name: 'メッゾドラニカ' },
+    { hp:  94000, name: 'ユニルス' },
+  ];
 
-var set_seeds = function() {
   for (var i in seed_table) {
     $('#seed').append('<option value="' + i + '">' + seed_table[i].name + '</option>');
   }
-  $('#seed').val("0");
-};
+  $('#seed').val("0").selectmenu('refresh');
 
-$(function() {
+  $.getQuery = function (name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  var maxpray = Number($.getQuery('maxpray')) || 300;
+
   var reset_hp = function() {
     var seed, wave, oldval, min, max;
     seed = seed_table[$('#seed').val()];
     wave = $('input[name="wave"]:checked').val();
     oldval = $('#seed-hp').val();
     min = seed.hp * (1 + (wave - 1)*0.2)
-    max = min*4;
+    max = min*(maxpray + 100)/100;
 
     $('#seed-hp').attr('min', min);
     $('#seed-hp').attr('max', max);
@@ -89,11 +95,19 @@ $(function() {
     $("#pray-result").text(result);
   };
 
-  $('input[name="wave"]').on('click', calc);
+  $('input[name="wave"]').on('tap', calc);
   $('#seed').on('change', calc);
   $('#seed-hp').on('change', calc);
 
   reset_hp();
+
+  $('[data-step-hp]').on('tap', function() {
+    var step, ohp;
+    step = ($('#seed-hp').attr('min')*$(this).data('step-hp'))/100;
+    ohp  = $('#seed-hp').val();
+    $('#seed-hp').val(Number(ohp) + step);
+    $('#seed-hp').slider('refresh');
+  });
 });
 </script>
 </head>
@@ -117,13 +131,18 @@ $(function() {
       </select>
     </div>
     <div data-role="fieldcontain">
-      <label for="seed-hp">シードの最大体力</label>
-      <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
-      <script type="text/javascript">set_seeds();</script>
+        <label style="height: 1.5em;">シードの最大体力</label>
+        <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
+        <div style="text-align: center;">
+          <button type="button" data-step-hp="-10" data-role="button" data-icon="arrow-l" data-inline="true" data-mini="true" data-iconpos="notext">-10%</button>
+          <button type="button" data-step-hp="-1" data-role="button" data-icon="minus" data-inline="true" data-mini="true" data-iconpos="notext">-1%</button>
+          <button type="button" data-step-hp="1" data-role="button" data-icon="plus" data-inline="true" data-mini="true" data-iconpos="notext">+1%</button>
+          <button type="button" data-step-hp="10" data-role="button" data-icon="arrow-r" data-inline="true" data-mini="true" data-iconpos="notext">+10%</button>
+        </div>
     </div>
     <div data-role="fieldcontain">
       <label>予想祈り</label>
-      <p class="result-body"><span id="pray-result">0</span>%</p>
+      <p class="result-body">約<span id="pray-result">0</span>%</p>
     </div>
     <div class="notice">
       <label>概要</label>
@@ -144,9 +163,19 @@ $(function() {
       <ul class="notice">
         <li>あくまで計算による予想値であって、正確な値ではありません。</li>
         <li><a href="http://メルクストーリア.gamerch.com/">メルクストーリア - 癒術士と鈴のしらべ -攻略Wiki【メルスト攻略】</a>サイトに記載されているサイズ 1.7 のシードモンスターの最大体力を基準に計算しています。</li>
+        <li>標準ではシードの体力選択のスライダーは祈り 300% 相当が最大値となっています。これを超える上位ギルドの方は下記をお試しください。
+          <div data-role="controlgroup">
+            <a href="?maxpray=" data-ajax="false" data-role="button">祈り最大 300% (標準)</a>
+            <a href="?maxpray=600" data-ajax="false" data-role="button">祈り最大 600%</a>
+            <a href="?maxpray=1200" data-ajax="false" data-role="button">祈り最大 1200%</a>
+            <a href="?maxpray=2400" data-ajax="false" data-role="button">祈り最大 2400%</a>
+            <a href="?maxpray=3600" data-ajax="false" data-role="button">祈り最大 3600%</a>
+          </div>
+        </li>
       </ul>
     </div>
   </form>
 </div>
+<script type="text/javascript">set_seeds();</script>
 </body>
 </html>
