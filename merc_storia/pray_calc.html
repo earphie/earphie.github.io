@@ -72,10 +72,10 @@ $(function() {
   var maxpray = Number($.getQuery('maxpray')) || 300;
 
   var reset_hp = function() {
-    var seed, wave, oldval, min, max;
+    var seed, wave, pray, min, max;
     seed = seed_table[$('#seed').val()];
     wave = $('input[name="wave"]:checked').val();
-    oldval = $('#seed-hp').val();
+    pray = Number($('#pray-result').text());
     min = seed.hp * (1 + (wave - 1)*0.2)
     max = min*(maxpray + 100)/100;
 
@@ -83,7 +83,7 @@ $(function() {
       .attr('min', min)
       .attr('max', max)
       .attr('step', min/100)
-      .val(Math.min(Math.max(oldval, min), max))
+      .val(min + min*pray/100)
       .slider('refresh');
   };
   $('input[name="wave"]').on('click', reset_hp);
