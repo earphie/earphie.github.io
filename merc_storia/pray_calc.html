@@ -69,7 +69,7 @@ $(function() {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
-  var maxpray = Number($.getQuery('maxpray')) || 300;
+  var maxpray = Number($.getQuery('maxpray')) || 800;
 
   var reset_hp = function() {
     var seed, wave, pray, min, max;
@@ -173,14 +173,13 @@ ga('send', 'pageview');
       <ul class="notice">
         <li>あくまで計算による予想値であって、正確な値ではありません。</li>
         <li>基準となるシードモンスターの最大体力は、<a href="http://メルクストーリア.gamerch.com/">メルクストーリア - 癒術士と鈴のしらべ -攻略Wiki【メルスト攻略】</a>の該当ページに記載されているサイズ 1.7 の値を用いています。</li>
-        <li>標準ではシードの体力選択スライダーは祈り 300% 相当が最大となっています。これを超える上位ギルドの方は下記をお試しください。
+        <li>標準ではシードの体力選択スライダーは祈り 800% 相当が最大となっています。これを超える上位ギルドの方は下記をお試しください。
           <div data-role="controlgroup">
-            <a href="?" data-ajax="false" data-role="button">祈り最大 300% (標準)</a>
-            <a href="?maxpray=600" data-ajax="false" data-role="button">祈り最大 600%</a>
-            <a href="?maxpray=1200" data-ajax="false" data-role="button">祈り最大 1200%</a>
-            <a href="?maxpray=3600" data-ajax="false" data-role="button">祈り最大 3600%</a>
-            <a href="?maxpray=6000" data-ajax="false" data-role="button">祈り最大 6000%</a>
-            <a href="?maxpray=9600" data-ajax="false" data-role="button">祈り最大 9600%</a>
+            <a href="?" data-ajax="false" data-role="button">祈り最大 800% (標準)</a>
+            <a href="?maxpray=600" data-ajax="false" data-role="button">祈り最大 1600%</a>
+            <a href="?maxpray=1200" data-ajax="false" data-role="button">祈り最大 3200%</a>
+            <a href="?maxpray=3600" data-ajax="false" data-role="button">祈り最大 6400%</a>
+            <a href="?maxpray=6000" data-ajax="false" data-role="button">祈り最大 12800%</a>
           </div>
         </li>
       </ul>
