@@ -125,67 +125,65 @@ ga('send', 'pageview');
 <body>
 <div class="container">
   <h1>メルクストーリア 祈られ計算機</h1>
-  <form class="form-horizontal" role="form">
-    <div data-role="fieldcontain">
-      <label>シード出現 Wave</label>
-      <fieldset data-role="controlgroup" data-type="horizontal">
-        <label><input type="radio" name="wave" id="wave1" value="1" checked>1</label>
-        <label><input type="radio" name="wave" id="wave2" value="2">2</label>
-        <label><input type="radio" name="wave" id="wave3" value="3">3</label>
-        <label><input type="radio" name="wave" id="wave4" value="4">4</label>
-        <label><input type="radio" name="wave" id="wave5" value="5">5</label>
-      </fieldset>
+  <div data-role="fieldcontain">
+    <label>シード出現 Wave</label>
+    <fieldset data-role="controlgroup" data-type="horizontal">
+      <label><input type="radio" name="wave" id="wave1" value="1" checked>1</label>
+      <label><input type="radio" name="wave" id="wave2" value="2">2</label>
+      <label><input type="radio" name="wave" id="wave3" value="3">3</label>
+      <label><input type="radio" name="wave" id="wave4" value="4">4</label>
+      <label><input type="radio" name="wave" id="wave5" value="5">5</label>
+    </fieldset>
+  </div>
+  <div data-role="fieldcontain">
+    <label for="seed">シードの種類</label>
+    <select name="seed" id="seed">
+    </select>
+  </div>
+  <div data-role="fieldcontain">
+    <label style="height: 1.5em;">シードの最大体力</label>
+    <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
+    <div style="text-align: center;">
+      <button type="button" data-step-hp="-10" data-role="button" data-icon="arrow-l" data-inline="true" data-mini="true" data-iconpos="notext">-10%</button>
+      <button type="button" data-step-hp="-1" data-role="button" data-icon="minus" data-inline="true" data-mini="true" data-iconpos="notext">-1%</button>
+      <button type="button" data-step-hp="1" data-role="button" data-icon="plus" data-inline="true" data-mini="true" data-iconpos="notext">+1%</button>
+      <button type="button" data-step-hp="10" data-role="button" data-icon="arrow-r" data-inline="true" data-mini="true" data-iconpos="notext">+10%</button>
     </div>
-    <div data-role="fieldcontain">
-      <label for="seed">シードの種類</label>
-      <select name="seed" id="seed">
-      </select>
-    </div>
-    <div data-role="fieldcontain">
-        <label style="height: 1.5em;">シードの最大体力</label>
-        <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
-        <div style="text-align: center;">
-          <button type="button" data-step-hp="-10" data-role="button" data-icon="arrow-l" data-inline="true" data-mini="true" data-iconpos="notext">-10%</button>
-          <button type="button" data-step-hp="-1" data-role="button" data-icon="minus" data-inline="true" data-mini="true" data-iconpos="notext">-1%</button>
-          <button type="button" data-step-hp="1" data-role="button" data-icon="plus" data-inline="true" data-mini="true" data-iconpos="notext">+1%</button>
-          <button type="button" data-step-hp="10" data-role="button" data-icon="arrow-r" data-inline="true" data-mini="true" data-iconpos="notext">+10%</button>
+  </div>
+  <div data-role="fieldcontain">
+    <label>予想祈り</label>
+    <p class="result-body">約<span id="pray-result">0</span>%</p>
+  </div>
+  <div class="notice">
+    <label>概要</label>
+    <p><a href="http://mercstoria.happyelements.co.jp/">メルクストーリア</a>のギルドバトルにおいて、相手ギルドの「祈り」による防衛力上昇値を予想します。</p>
+  </div>
+  <div class="notice">
+    <label>使い方</label>
+    <ol class="usage">
+      <li>ギルドバトルで相手ギルドのアジトに出撃します。</li>
+      <li>ワイバーン、アースドラゴンなど、本ページで対応しているシードモンスターに出会ったときに、出現 Wave 数(何匹目か)と該当モンスターの最大体力を記憶します。</li>
+      <li>本ページで、出現 Wave 数と該当シードモンスターの種類をそれぞれ選択します。</li>
+      <li>「シードの最大体力」欄のスライダーを調整し、左側の数値が実際に出会ったシードの最大体力値と近い値になるようにします。</li>
+      <li>「予想祈り」欄に表示される数値が、相手ギルドの祈りによる予想防衛値です。</li>
+    </ol>
+  </div>
+  <div>
+    <label>注意事項</label>
+    <ul class="notice">
+      <li>あくまで計算による予想値であって、正確な値ではありません。</li>
+      <li>基準となるシードモンスターの最大体力は、<a href="http://メルクストーリア.gamerch.com/">メルクストーリア - 癒術士と鈴のしらべ -攻略Wiki【メルスト攻略】</a>の該当ページに記載されているサイズ 1.7 の値を用いています。</li>
+      <li>標準ではシードの体力選択スライダーは祈り 800% 相当が最大となっています。これを超える上位ギルドの方は下記をお試しください。
+        <div data-role="controlgroup">
+          <a href="?" data-ajax="false" data-role="button">祈り最大 800% (標準)</a>
+          <a href="?maxpray=1600" data-ajax="false" data-role="button">祈り最大 1600%</a>
+          <a href="?maxpray=3200" data-ajax="false" data-role="button">祈り最大 3200%</a>
+          <a href="?maxpray=6400" data-ajax="false" data-role="button">祈り最大 6400%</a>
+          <a href="?maxpray=12800" data-ajax="false" data-role="button">祈り最大 12800%</a>
         </div>
-    </div>
-    <div data-role="fieldcontain">
-      <label>予想祈り</label>
-      <p class="result-body">約<span id="pray-result">0</span>%</p>
-    </div>
-    <div class="notice">
-      <label>概要</label>
-      <p><a href="http://mercstoria.happyelements.co.jp/">メルクストーリア</a>のギルドバトルにおいて、相手ギルドの「祈り」による防衛力上昇値を予想します。</p>
-    </div>
-    <div class="notice">
-      <label>使い方</label>
-      <ol class="usage">
-        <li>ギルドバトルで相手ギルドのアジトに出撃します。</li>
-        <li>ワイバーン、アースドラゴンなど、本ページで対応しているシードモンスターに出会ったときに、出現 Wave 数(何匹目か)と該当モンスターの最大体力を記憶します。</li>
-        <li>本ページで、出現 Wave 数と該当シードモンスターの種類をそれぞれ選択します。</li>
-        <li>「シードの最大体力」欄のスライダーを調整し、左側の数値が実際に出会ったシードの最大体力値と近い値になるようにします。</li>
-        <li>「予想祈り」欄に表示される数値が、相手ギルドの祈りによる予想防衛値です。</li>
-      </ol>
-    </div>
-    <div>
-      <label>注意事項</label>
-      <ul class="notice">
-        <li>あくまで計算による予想値であって、正確な値ではありません。</li>
-        <li>基準となるシードモンスターの最大体力は、<a href="http://メルクストーリア.gamerch.com/">メルクストーリア - 癒術士と鈴のしらべ -攻略Wiki【メルスト攻略】</a>の該当ページに記載されているサイズ 1.7 の値を用いています。</li>
-        <li>標準ではシードの体力選択スライダーは祈り 800% 相当が最大となっています。これを超える上位ギルドの方は下記をお試しください。
-          <div data-role="controlgroup">
-            <a href="?" data-ajax="false" data-role="button">祈り最大 800% (標準)</a>
-            <a href="?maxpray=1600" data-ajax="false" data-role="button">祈り最大 1600%</a>
-            <a href="?maxpray=3200" data-ajax="false" data-role="button">祈り最大 3200%</a>
-            <a href="?maxpray=6400" data-ajax="false" data-role="button">祈り最大 6400%</a>
-            <a href="?maxpray=12800" data-ajax="false" data-role="button">祈り最大 12800%</a>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </form>
+      </li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>
