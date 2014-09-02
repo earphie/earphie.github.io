@@ -73,7 +73,7 @@ $(function() {
 
   var maxpray = Number($.getQuery('maxpray')) || 800;
 
-  var reset_hp = function() {
+  var reset_hp = function () {
     var seed, wave, pray, min, max;
     seed = seed_table[$('#seed').val()];
     wave = $('input[name="wave"]:checked').val();
@@ -91,7 +91,18 @@ $(function() {
   $('input[name="wave"]').on('click', reset_hp);
   $('#seed').on('change', reset_hp);
 
-  var calc = function() {
+  var expandUnit = function (e) {
+    var key, exp;
+    key = String.fromCharCode(e.which).toLowerCase();
+    exp = "kmg".indexOf(key) + 1;
+    if (0 < exp) {
+      e.preventDefault();
+      $(this).val($(this).val() + "e+" + exp*3);
+      return false;
+    }
+  };
+
+  var calc = function () {
     var seed, hp, obshp, wave, result;
     seed = seed_table[$('#seed').val()];
     obshp = $('#seed-hp').val();
@@ -104,6 +115,7 @@ $(function() {
 
   $('input[name="wave"]').on('tap', calc);
   $('#seed').on('change', calc);
+  $('#seed-hp').on('keypress', expandUnit);
   $('#seed-hp').on('change', calc);
 
   $('[data-step-hp]').on('tap', function() {
