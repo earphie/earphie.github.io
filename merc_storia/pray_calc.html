@@ -43,36 +43,64 @@ ul.notice > li:before {
 <script type="text/javascript">
 $(function ($) {
   var seed_table = [
-    { hp: 161000, name: '[水] オルガウス' },
-    { hp: 160000, name: '[闇] ワイバーン' },
-    { hp: 162000, name: '[闇] ワイバーン (1.8)' },
-    { hp: 158000, name: '[風] オオマガツフウジャ' },
-    { hp: 158000, name: '[闇] ホーリーバイソン' },
-    { hp: 157000, name: '[炎] ヒポポターシャ' },
-    { hp: 156000, name: '[光] レオファントム' },
-    { hp: 155000, name: '[水] ディンプシオン' },
-    { hp: 153000, name: '[風] ホロジア' },
-    { hp: 150000, name: '[風] アースドラゴン' },
-    { hp: 147000, name: '[炎] ニグレット' },
-    { hp: 144000, name: '[光] グラニアゼウス' },
-    { hp: 144000, name: '[炎] リフティー' },
-    { hp: 140000, name: '[炎] フレアドラゴン' },
-    { hp: 138000, name: '[闇] メルキオーガ' },
-    { hp: 137000, name: '[炎] ジャバウォック' },
-    { hp: 135000, name: '[水] シックル' },
-    { hp: 132000, name: '[光] クイーンスピッツ' },
-    { hp: 127000, name: '[光] ファーブニール' },
-    { hp: 123000, name: '[風] ノーズハンマー' },
-    { hp: 120000, name: '[水] メッゾドラニカ' },
-    { hp: 113000, name: '[闇] マンティスアント' },
-    { hp: 111000, name: '[闇] クロウヴィス' },
-    { hp:  89000, name: '[風] スノロール' },
+    { attr: 'water', hp: 161000, name: '[水] オルガウス' },
+    { attr: 'dark',  hp: 160000, name: '[闇] ワイバーン' },
+    { attr: 'dark',  hp: 162000, name: '[闇] ワイバーン (1.8)' },
+    { attr: 'wind',  hp: 158000, name: '[風] オオマガツフウジャ' },
+    { attr: 'dark',  hp: 158000, name: '[闇] ホーリーバイソン' },
+    { attr: 'fire',  hp: 157000, name: '[炎] ヒポポターシャ' },
+    { attr: 'light', hp: 156000, name: '[光] レオファントム' },
+    { attr: 'water', hp: 155000, name: '[水] ディンプシオン' },
+    { attr: 'wind',  hp: 153000, name: '[風] ホロジア' },
+    { attr: 'wind',  hp: 150000, name: '[風] アースドラゴン' },
+    { attr: 'fire',  hp: 147000, name: '[炎] ニグレット' },
+    { attr: 'light', hp: 144000, name: '[光] グラニアゼウス' },
+    { attr: 'fire',  hp: 144000, name: '[炎] リフティー' },
+    { attr: 'fire',  hp: 140000, name: '[炎] フレアドラゴン' },
+    { attr: 'dark',  hp: 138000, name: '[闇] メルキオーガ' },
+    { attr: 'fire',  hp: 137000, name: '[炎] ジャバウォック' },
+    { attr: 'water', hp: 135000, name: '[水] シックル' },
+    { attr: 'light', hp: 132000, name: '[光] クイーンスピッツ' },
+    { attr: 'light', hp: 127000, name: '[光] ファーブニール' },
+    { attr: 'wind',  hp: 123000, name: '[風] ノーズハンマー' },
+    { attr: 'water', hp: 120000, name: '[水] メッゾドラニカ' },
+    { attr: 'dark',  hp: 113000, name: '[闇] マンティスアント' },
+    { attr: 'dark',  hp: 111000, name: '[闇] クロウヴィス' },
+    { attr: 'wind',  hp:  89000, name: '[風] スノロール' },
   ];
 
-  for (var i in seed_table) {
-    $('#seed').append('<option value="' + i + '">' + seed_table[i].name + '</option>');
+  var reset_hp = function () {
+    var seed, wave, pray, min, max;
+    seed = seed_table[$('#seed').val()];
+    wave = $('input[name="wave"]:checked').val() || 1;
+    pray = Number($('#pray-result').text());
+    min = seed.hp * (1 + (wave - 1)*0.2)
+    max = min*(maxpray + 100)/100;
+
+    $('#seed-hp')
+      .attr('min', min)
+      .attr('max', max)
+      .attr('step', min/100)
+      .val(min + min*pray/100)
+      .trigger('change')
+      .slider('refresh');
+  };
+  $('input[name="wave"]').on('click', reset_hp);
+  $('#seed').on('change', reset_hp);
+
+  var filter_attr = function () {
+    var filter = $('input[name="attr-filter"]:checked').val(),
+        $seed  = $('#seed');
+    $seed.empty();
+    for (var i in seed_table) {
+      if (!filter || filter == 'all' || seed_table[i].attr == filter) {
+        $seed.append($("<option>").val(i).text(seed_table[i].name));
+      }
+    }
+    $seed.val($seed.find('option:first').val()).trigger('change').selectmenu('refresh');
   }
-  $('#seed').val("0").selectmenu('refresh');
+  filter_attr();
+  $('input[name="attr-filter"]').on('click', filter_attr);
 
   $.getQuery = function (name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -83,31 +111,13 @@ $(function ($) {
 
   var maxpray = Number($.getQuery('maxpray')) || 800;
 
-  var reset_hp = function () {
-    var seed, wave, pray, min, max;
-    seed = seed_table[$('#seed').val()];
-    wave = $('input[name="wave"]:checked').val();
-    pray = Number($('#pray-result').text());
-    min = seed.hp * (1 + (wave - 1)*0.2)
-    max = min*(maxpray + 100)/100;
-
-    $('#seed-hp')
-      .attr('min', min)
-      .attr('max', max)
-      .attr('step', min/100)
-      .val(min + min*pray/100)
-      .slider('refresh');
-  };
-  $('input[name="wave"]').on('click', reset_hp);
-  $('#seed').on('change', reset_hp);
-
   var expandUnit = function (e) {
     var key, exp;
     key = String.fromCharCode(e.which).toLowerCase();
     exp = "kmg".indexOf(key) + 1;
     if (0 < exp) {
       e.preventDefault();
-      $(this).val($(this).val() + "e+" + exp*3);
+      $(this).val($(this).val() + "e+" + exp*3).trigger('change');
       return false;
     }
   };
@@ -116,7 +126,7 @@ $(function ($) {
     var seed, hp, obshp, wave, result;
     seed = seed_table[$('#seed').val()];
     obshp = $('#seed-hp').val();
-    wave = $('input[name="wave"]:checked').val();
+    wave = $('input[name="wave"]:checked').val() || 1;
 
     hp = seed.hp * (1 + (wave - 1)*0.2)
     result = Math.max(Math.round((obshp/hp)*100) - 100, 0);
@@ -130,7 +140,7 @@ $(function ($) {
     var step, ohp;
     step = ($('#seed-hp').attr('min')*$(this).data('step-hp'))/100;
     ohp  = $('#seed-hp').val();
-    $('#seed-hp').val(Number(ohp) + step).slider('refresh');
+    $('#seed-hp').val(Number(ohp) + step).trigger('change').slider('refresh');
   });
 
   reset_hp();
@@ -146,7 +156,7 @@ ga('send', 'pageview');
 <body>
 <div class="container">
   <h1>メルクストーリア 祈られ計算機</h1>
-  <div data-role="fieldcontain">
+  <div class="ui-field-contain">
     <label>シード出現 Wave</label>
     <fieldset data-role="controlgroup" data-type="horizontal">
       <label><input type="radio" name="wave" id="wave1" value="1" checked>1</label>
@@ -156,22 +166,34 @@ ga('send', 'pageview');
       <label><input type="radio" name="wave" id="wave5" value="5">5</label>
     </fieldset>
   </div>
-  <div data-role="fieldcontain">
+  <div class="ui-field-contain">
     <label for="seed">シードの種類</label>
-    <select name="seed" id="seed">
-    </select>
+    <fieldset class="ui-controlgroup">
+      <fieldset data-role="controlgroup" data-type="horizontal">
+        <label><input type="radio" name="attr-filter" id="attr-all"   value="all" checked>全</label>
+        <label><input type="radio" name="attr-filter" id="attr-fire"  value="fire" >炎</label>
+        <label><input type="radio" name="attr-filter" id="attr-water" value="water">水</label>
+        <label><input type="radio" name="attr-filter" id="attr-wind"  value="wind" >風</label>
+        <label><input type="radio" name="attr-filter" id="attr-light" value="light">光</label>
+        <label><input type="radio" name="attr-filter" id="attr-dark"  value="dark" >闇</label>
+      </fieldset>
+      <select name="seed" id="seed">
+      </select>
+    </fieldset>
   </div>
-  <div data-role="fieldcontain">
-    <label style="height: 1.5em;">シードの最大体力</label>
-    <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
-    <div style="text-align: center;">
-      <button type="button" data-step-hp="-10" data-role="button" data-icon="arrow-l" data-inline="true" data-mini="true" data-iconpos="notext">-10%</button>
-      <button type="button" data-step-hp="-1" data-role="button" data-icon="minus" data-inline="true" data-mini="true" data-iconpos="notext">-1%</button>
-      <button type="button" data-step-hp="1" data-role="button" data-icon="plus" data-inline="true" data-mini="true" data-iconpos="notext">+1%</button>
-      <button type="button" data-step-hp="10" data-role="button" data-icon="arrow-r" data-inline="true" data-mini="true" data-iconpos="notext">+10%</button>
-    </div>
+  <div class="ui-field-contain">
+    <label>シードの最大体力</label>
+    <fieldset class="ui-controlgroup">
+      <input type="range" name="seed-hp" id="seed-hp" value="100000" min="100000" max="1000000" data-highlight="true">
+      <div style="text-align: center;">
+        <button type="button" data-step-hp="-10" data-role="button" data-icon="arrow-l" data-inline="true" data-mini="true" data-iconpos="notext">-10%</button>
+        <button type="button" data-step-hp="-1" data-role="button" data-icon="minus" data-inline="true" data-mini="true" data-iconpos="notext">-1%</button>
+        <button type="button" data-step-hp="1" data-role="button" data-icon="plus" data-inline="true" data-mini="true" data-iconpos="notext">+1%</button>
+        <button type="button" data-step-hp="10" data-role="button" data-icon="arrow-r" data-inline="true" data-mini="true" data-iconpos="notext">+10%</button>
+      </div>
+    </fieldset>
   </div>
-  <div data-role="fieldcontain">
+  <div class="ui-field-contain">
     <label>予想祈り</label>
     <p class="result-body">約<span id="pray-result">0</span>%</p>
   </div>
