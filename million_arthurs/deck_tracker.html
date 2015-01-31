@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<title>乖離性ミリオンアーサー デッキトラッカー</title>
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<style type="text/css">
+.field div, .field label, .library div, .library label {
+  box-sizing: border-box;
+  text-align: center;
+  transition: 0.25s ease;
+}
+.field .type-marker, .field .cost-marker {
+  float: left;
+  height: 1.5em;
+  width: 50%;
+  font-weight: bold;
+}
+.library .type-marker, .library .cost-marker {
+  float: left;
+  height: 1.5em;
+  width: 1.2em;
+  font-weight: bold;
+}
+.field .skill-marker {
+  position: relative;
+  top: calc(-1em - 2px);
+  left: 0px;
+  height: 1.5em;
+  width: 1.5em;
+  box-sizing: border-box;
+  text-shadow: black 1px 1px 0, black -1px 1px 0,
+             black 1px -1px 0, black -1px -1px 0;
+  color: white;
+}
+.library .skill-marker {
+  float: left;
+  height: 1.5em;
+  width: 1.2em;
+  box-sizing: border-box;
+  text-shadow: black 1px 1px 0, black -1px 1px 0,
+             black 1px -1px 0, black -1px -1px 0;
+  color: white;
+}
+.field .cbody {
+  clear: both;
+  height: 4em;
+  width: 100%;
+  overflow: hidden;
+  line-height: 1.3;
+}
+.library .cbody {
+  text-align: left;
+  float: left;
+  height: 1.5em;
+  width: calc(100% - 3.6em);
+  overflow: hidden;
+}
+
+.library li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.library input {
+  display: none;
+}
+.library input + label {
+  margin-left: 1em;
+}
+.library input:checked + label {
+  margin-left: 0;
+  margin-right: 1em;
+}
+.library .card {
+  margin: 0;
+  padding: 0;
+}
+.library .card label {
+  margin: 0 0 0 1em;
+  padding: 0;
+  width: 100%;
+}
+
+.field .card {
+  position: absolute;
+  top: 0;
+}
+.field .card label {
+  width: 4em;
+  height: 6em;
+  cursor: pointer;
+  user-select: none;
+}
+.field input {
+  display: none;
+}
+.field input + label {
+  margin-top: 1em;
+}
+.field input:checked + label {
+  margin-top: 0;
+}
+.wind, .fire, .ice, .light, .dark {
+  border-style: solid;
+  border-width: 1px;
+}
+.wind {
+  border-color: #006600;
+  color: #006600;
+  background-color: #E6F0E6;
+}
+.wind:hover, input:checked + label.wind {
+  box-shadow: 0 0 1ex #66A366;
+}
+.fire {
+  border-color: #A00000;
+  color: #A00000;
+  background-color: #F6E6E6;
+}
+.fire:hover, input:checked + label.fire {
+  box-shadow: 0 0 1ex #C66666;
+}
+.ice {
+  border-color: #006699;
+  color: #006699;
+  background-color: #E6F0F5;
+}
+.ice:hover, input:checked + label.ice {
+  box-shadow: 0 0 1ex #66A3C2;
+}
+.light {
+  border-color: #9B7A16;
+  color: #9B7A16;
+  background-color: #F5F2E8;
+}
+.light:hover, input:checked + label.light {
+  box-shadow: 0 0 1ex #C3AF73;
+}
+.dark {
+  border-color: #6600CC;
+  color: #6600CC;
+  background-color: #F0E6FA;
+}
+.dark:hover, input:checked + label.dark {
+  box-shadow: 0 0 1ex #A366E0;
+}
+#hand_area {
+  height: 10em;
+}
+#deck_area {
+  height: 10em;
+}
+#trash_area {
+  height: 10em;
+}
+</style>
+
+<script type="text/javascript">
+var M = {};
+(function (M, $, CARDS) {
+  var factory = (function () {
+    var attrs, skills, atypes;
+    atypes = { a: "傭", b: "富", c: "盗", d: "歌", z: "他" };
+    skills = { p: "物", m: "魔", s: "支", h: "治", d: "守", b: "妨" };
+    attrs = { f: "fire", i: "ice", w: "wind", l: "light", d: "dark" };
+
+    return {
+      newCard: function (cid) {
+        var name = CARDS[cid];
+        if (!name) { return $(); }
+        return $($('#tpl_card')[0].content)
+          .clone()
+          .find('input').attr('id', 'card-' + cid).attr('name', 'cards').end()
+          .find('label').addClass(attrs[cid[2]]).attr('for', 'card-' + cid)
+          .find('.type-marker').text(atypes[cid[0]]).end()
+          .find('.cost-marker').text(cid[1]).end()
+          .find('.skill-marker').text(skills[cid[3]]).end()
+          .find('.cbody').text(name).end()
+          .end();
+      },
+      newBook: function (cid) {
+        var name = CARDS[cid];
+        if (!name) { return $(); }
+        return $($('#tpl_card')[0].content)
+          .clone()
+          .find('input').attr('id', 'book-' + cid).attr('name', 'books').end()
+          .find('label').addClass(attrs[cid[2]]).attr('for', 'book-' + cid)
+          .find('.type-marker').text(atypes[cid[0]]).end()
+          .find('.cost-marker').text(cid[1]).end()
+          .find('.skill-marker').text(skills[cid[3]]).end()
+          .find('.cbody').text(name).end()
+          .end();
+      },
+    };
+  })();
+
+  M.updateField = function () {
+    $('div.field > .hand')
+      .css('top', $('#hand_area').position().top + 'px')
+      .css('left', function (i) { return 'calc(' + $('#hand_area').position().left + 'px + ' + i*4.5 + 'em)' });
+    $('div.field > .deck')
+      .css('top', $('#deck_area').position().top + 'px')
+      .css('left', function (i) { return 'calc(' + $('#deck_area').position().left + 'px + ' + i*4.5 + 'em)' });
+    $('div.field > .trash')
+      .css('top', $('#trash_area').position().top + 'px')
+      .css('left', function (i) { return 'calc(' + $('#trash_area').position().left + 'px + ' + i*4.5 + 'em)' });
+  };
+
+  M.startTurn = function () {
+    $('div.field > div.hand:has(input[name="cards"]:checked)').each(function () {
+      $(this).removeClass('hand').addClass('trash').find('input[name="cards"]').prop('checked', false);
+    });
+    M.updateField();
+  };
+
+  M.draw = function (count) {
+    if (5 <= $('div.field > div.hand').length) return;
+    if (count <= 0) return;
+
+    $selected = $('div.field > div.deck:has(input[name="cards"]:checked)');
+    if (0 < $selected.length) {
+      $selected.eq(Math.floor(Math.random() * $selected.length))
+        .removeClass('deck').addClass('hand').find('input[name="cards"]').prop('checked', false);
+      M.updateField();
+      return setTimeout(M.draw, 250, count - 1);
+    }
+
+    $deck = $('div.field > div.deck');
+    if ($deck.length <= 0) {
+      if ($('div.field > div.trash').length <= 0) return;
+      M.shuffle();
+      return setTimeout(M.draw, 250, count);
+    }
+
+    $deck.eq(Math.floor(Math.random() * $deck.length))
+      .removeClass('deck').addClass('hand').find('input[name="cards"]').prop('checked', false);
+
+    M.updateField();
+    setTimeout(M.draw, 250, count - 1);
+  };
+
+  M.shuffle = function () {
+    $('div.field > div.trash').each(function () {
+      $(this).removeClass('trash').addClass('deck');
+    });
+    M.updateField();
+  };
+
+  M.takeBook = function (ev) {
+    var $cards, cid;
+    $cards = $('#field').find('div.card');
+    cid = $(this).attr('id').slice(5);
+    if ($(this).prop('checked')) {
+      if (10 <= $cards.length) { $(this).prop('checked', false); return false; }
+      $('#field').append(factory.newCard(cid));
+    } else {
+      $('#card-' + cid).parent().remove();
+    }
+    M.updateField();
+  }
+
+  // initialize
+  $(function ($) {
+    $('#start_turn').on('click', M.startTurn);
+    $('#draw1').on('click', function () { M.draw(1); });
+    $('#draw5').on('click', function () { M.draw(5); });
+    $('#shuffle').on('click', M.shuffle);
+    $('#library').on('change', 'input', M.takeBook);
+    for (c in CARDS) {
+      $('#library').append(factory.newBook(c));
+    }
+  });
+})(M, jQuery, {
+  a1fs0: "第二型マロース",
+  a2dp0: "聖夜型アイアンサイド",
+  a2dp1: "支援型ブランシュフルール",
+  a2fm0: "ヴァンニク",
+  a2fp0: "第二型バグデマグス",
+  a2fs0: "支援型イテール",
+  a2ip1: "奏楽型ウアサハ",
+  a2ip0: "特異型ナージェジタ",
+  a2lp0: "第二型グロマーソマージョア",
+  a2lp1: "新春型アーサー　剣術の城（傭兵）",
+  a2wp0: "教練型ケイ",
+  a3fp0: "第二型ガヘリス",
+  a3fp1: "新春型カドール",
+  a3fs0: "第二型クラッキー",
+  a3ip0: "聖夜型ニムエ（傭兵）",
+  a3ip1: "新春型オイフェ",
+  a3lp1: "華恋型ベディヴィア",
+  a3lp0: "第二型ローエングリン",
+  a3wm0: "争杯型聖杯のエレイン",
+  a3wp0: "蹴球型リトルグレイ",
+  a3wp0: "特殊型ゴルロイス",
+  a4dp0: "複製型漁夫王",
+  a4dp1: "特異型アキレウス",
+  a4fp0: "第二型ビスクラヴレット",
+  a4fp1: "シルキー",
+  a4ip0: "支援型オルウェン",
+  a4lp1: "複製型ウアサハ（傭兵）",
+  a4lp2: "ギリードゥ",
+  a4wp0: "制圧型パーシヴァル",
+  a4wp1: "第二型アグラヴェイン",
+  a4wp2: "ブラウニー",
+  a5dm0: "第一型モードレッド",
+  a5dp0: "聖夜型トール",
+  a5fp0: "虚無型エターナル・フレイム",
+  a5lm0: "新春型ベイリン",
+  a5wp0: "支援型アストラトエレイン",
+
+  b2db0: "支援型ラグネル",
+  b2dp0: "ワイルドハント",
+  b2fb0: "特異型ディートリヒ",
+  b2fp0: "第二型ペリノア",
+  b2fs0: "聖夜型オルウェン",
+  b2id0: "特異型オデュッセウス",
+  b2ip0: "第二型ギフレイス",
+  b2ld0: "聖夜型ニムエ（富豪）",
+  b2lp0: "特異型ナポレオン",
+  b2wp0: "第二型カドール",
+  b3dd0: "ペリーダンサー",
+  b3dp0: "制圧型ゴットフリート",
+  b3dp1: "第二型トリストラム",
+  b3fd0: "新春型クーホリン",
+  b3fp0: "外敵型バン",
+  b3ip1: "ケルピー",
+  b3ip0: "特異型シグルーン",
+  b3is0: "第二型トール",
+  b3wp0: "支援型エニ―ド",
+  b3wp1: "聖夜型傭兵アーサー",
+  b3wp2: "歌姫型グィネヴィア",
+  b3wb0: "特異型ロビンフッド",
+  b4fp0: "第二型マルク",
+  b4fp1: "華恋型パーシヴァル",
+  b4id0: "第二型タークィン",
+  b4id1: "支援型ローディーネ",
+  b4ip0: "複製型クーホリン",
+  b4ld0: "ドモヴォーイ",
+  b4ld1: "華恋型ブリーセン",
+  b4lp0: "特異型甲斐姫",
+  b4lp1: "新春型アーサー　剣術の城（富豪）",
+  b4wp0: "新春型ビスクラヴレット",
+  b5fp0: "新春型エニード",
+  b5lp0: "特異型ジャンヌダルク",
+  b5wd0: "複製型ウアサハ（富豪）",
+
+  c1ws0: "第二型ゴルネマント",
+  c2db0: "第二型メレアガンス",
+  c2db1: "支援型金髪のイゾルデ",
+  c2dm0: "華恋型リトルグレイ",
+  c2ds0: "蹴球型バーナード",
+  c2fm1: "聖夜型ニムエ（盗賊）",
+  c2fm0: "第二型ラモラック",
+  c2im1: "聖夜型ダーマス",
+  c2im0: "支援型ブリーセン",
+  c2lm0: "新春型リーフェ（盗賊）",
+  c2ls0: "聖夜型ゴットフリート",
+  c2wb0: "第二型バーナード",
+  c2wm0: "外敵型ボールス",
+  c2ws0: "支援型ガネイダ",
+  c3db0: "アンシーリーコート",
+  c3dm0: "特異型卑弥呼",
+  c3dm1: "帰化型ニムエ",
+  c3fm0: "支援型白手のイゾルデ",
+  c3ib2: "第二型ガレス",
+  c3ib0: "ペッグパウラー",
+  c3ib1: "ハルダーフォーク",
+  c3im1: "争杯型パーシヴァル",
+  c3im0: "第二型パーシヴァル",
+  c3lb0: "新春型歌姫アーサー",
+  c3lm0: "新春型シグルーン",
+  c3wm0: "支援型リネット",
+  c3ws0: "第二型エレック",
+  c4dm0: "バーバンシー",
+  c4im0: "復元型ウーサー",
+  c4lb0: "聖夜型サンタクロース",
+  c4lm0: "第二型ローンファル",
+  c4lm1: "歌姫型輝夜",
+  c4wm0: "新春型シーザー",
+  c5dm0: "複製型ウアサハ（盗賊）",
+  c5ds0: "新春型ウアサハ",
+  c5fm0: "バーゲスト",
+  c5im0: "華恋型ニムエ",
+  c5wm0: "第二型コルグリヴァンス",
+
+  d1fs0: "特異型シーザー",
+  d2dh0: "聖夜型ニムエ（歌姫）",
+  d2dm0: "第二型エクタードマリス",
+  d2fh0: "聖夜型ブランシュフルール",
+  d2fs0: "蹴球型ガヘリス",
+  d2ih0: "奏楽型フェアリーズ",
+  d2ih1: "聖夜型コンスタンティン",
+  d2ih3: "新春型ガヘリス",
+  d2lh0: "支援型エヴェイン",
+  d2lm2: "新春型リーフェ（歌姫）",
+  d2lm1: "第二型カルディス",
+  d2lm0: "第二型テルラムント",
+  d2wh0: "トム／サム",
+  d3dm0: "第二型ゴットフリート",
+  d3ds0: "新春型イテール",
+  d3fm0: "妖精ムリアン",
+  d3fs0: "第二型カログレナント",
+  d3id0: "第二型アイアンサイド",
+  d3im0: "支援型ブランクウェイン",
+  d3lh0: "制御型ベディヴィア",
+  d3lh2: "特異型リトルグレイ",
+  d3lh3: "ピクシー",
+  d3lh1: "第二型ベイラン",
+  d3wh1: "華恋型ヴァレンタイン",
+  d3wh0: "聖夜型リネット",
+  d3ws0: "第二型ガーロン",
+  d4dh0: "グルアガッハ",
+  d4lh0: "支援型オルトリート",
+  d4wm0: "第二型ディナダン",
+  d4ws0: "ルサリィ",
+  d5dm0: "特殊型ロウエナ",
+  d5fh0: "複製型ウアサハ（歌姫）",
+  d5fs0: "支援型クレア",
+  d5id0: "制圧型ローエングリン",
+  d5lh1: "制圧型エニード",
+  d5lh0: "シアナ",
+
+  z2lh0: "警備用駆骨（光）",
+});
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-52593350-3', 'auto');
+ga('send', 'pageview');
+</script>
+</head>
+<body>
+  </script>
+  <template id="tpl_card">
+    <div class="card deck">
+      <input type="checkbox">
+      <label>
+        <div class="type-marker"></div>
+        <div class="cost-marker"></div>
+        <div class="cbody"></div>
+        <div class="skill-marker"></div>
+      </label>
+    </div>
+  </template>
+  <div class="container">
+    <h1>乖離性ミリオンアーサー デッキトラッカー＆シミュレータ</h1>
+    <div class="row">
+      <div class="col-xs-9">
+        <div class="row">
+          <div class="col-xs-1">
+            <h3>手札</h3>
+          </div>
+          <div class="col-xs-9" id="hand_area">
+          </div>
+          <div class="col-xs-2">
+            <button type="button" class="btn btn-default" id="start_turn">戦闘開始</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-1">
+            <h3>山札</h3>
+          </div>
+          <div class="col-xs-9" id="deck_area">
+          </div>
+          <div class="col-xs-2">
+            <div class="btn-group-vertical" role="group">
+              <button type="button" class="btn btn-default" id="draw5">全補充</button>
+              <button type="button" class="btn btn-default" id="draw1">ドロー</button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-1">
+            <h3>捨札</h3>
+          </div>
+          <div class="col-xs-9" id="trash_area">
+          </div>
+          <div class="col-xs-2">
+            <button type="button" class="btn btn-default" id="shuffle">リセット</button>
+          </div>
+        </div>
+        <div id="field" class="field">
+        </div>
+      </div>
+      <div id="library" class="col-xs-3 library">
+      </div>
+    </div>
+  </div>
+</body>
+</html>
