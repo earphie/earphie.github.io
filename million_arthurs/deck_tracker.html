@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=768px,initial-scale=0.4">
+<meta name="viewport" content="width=600px,initial-scale=0.25">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 <title>乖離性ミリオンアーサー デッキトラッカー</title>
@@ -65,11 +65,6 @@
   overflow: hidden;
 }
 
-.library li {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
 .library input {
   display: none;
 }
@@ -168,6 +163,10 @@
 #deck_url {
   background-color: inherit;
   cursor: default;
+}
+#library {
+  overflow-y: scroll;
+  height: 28em;
 }
 
 #filter .btn-group {
@@ -557,7 +556,7 @@ ga('send', 'pageview');
   <div class="container">
     <h1>乖離性ミリオンアーサー デッキトラッカー＆シミュレータ</h1>
     <div class="row">
-      <div class="col-md-12 col-lg-9">
+      <div class="col-xs-12 col-lg-9">
         <div class="row">
           <div class="col-xs-1">
             <h3>手札</h3>
@@ -623,7 +622,7 @@ ga('send', 'pageview');
           </div>
         </div>
       </div>
-      <div class="col-md-4 col-md-push-8 col-lg-3 col-lg-push-0">
+      <div class="col-xs-6 col-xs-push-6 col-sm-5 col-sm-push-7 col-md-4 col-md-push-8 col-lg-3 col-lg-push-0">
         <div class=".filter" id="filter">
           <div class="row">
             <div class="col-xs-12">
@@ -714,7 +713,7 @@ ga('send', 'pageview');
           </div>
         </div>
       </div>
-      <div class="col-md-8 col-md-pull-4 col-lg-9 col-lg-pull-0">
+      <div class="col-xs-6 col-xs-pull-6 col-sm-7 col-sm-pull-5 col-md-8 col-md-pull-4 col-lg-9 col-lg-pull-0">
         <h2>簡易説明</h2>
         <ul>
           <li><a href="http://portal.million-arthurs.com/kairi/">乖離性ミリオンアーサー</a>のクエスト中のカード状態を把握したり、デッキの動きをシミュレーションしてみるためのツールです。</li>
