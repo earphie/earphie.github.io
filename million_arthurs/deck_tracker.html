@@ -163,6 +163,14 @@
   background-color: inherit;
   cursor: default;
 }
+
+.filter .btn-group {
+  margin-left: 1em;
+  margin-bottom: 1ex;
+}
+.filter input {
+  display: none;
+}
 </style>
 
 <script type="text/javascript">
@@ -583,7 +591,94 @@ ga('send', 'pageview');
           </div>
         </div>
       </div>
-      <div id="library" class="col-xs-3 library">
+      <div class="col-xs-3">
+        <div class="row">
+          <div class="col-xs-12 filter">
+            <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_" value="">
+            <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_a" value="a">
+            <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_b" value="b">
+            <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_c" value="c">
+            <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_d" value="d">
+            <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_z" value="z">
+            <div class="btn-group btn-group-justified" role="group">
+              <label class="btn btn-default btn-xs" for="filter_type_">全</label>
+              <label class="btn btn-default btn-xs" for="filter_type_a">傭</label>
+              <label class="btn btn-default btn-xs" for="filter_type_b">富</label>
+              <label class="btn btn-default btn-xs" for="filter_type_c">盗</label>
+              <label class="btn btn-default btn-xs" for="filter_type_d">歌</label>
+              <label class="btn btn-default btn-xs" for="filter_type_z">他</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 filter">
+            <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_" value="">
+            <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_1" value="1">
+            <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_2" value="2">
+            <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_3" value="3">
+            <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_4" value="4">
+            <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_5" value="5">
+            <div class="btn-group btn-group-justified" role="group">
+              <label class="btn btn-default btn-xs" for="filter_cost_">全</label>
+              <label class="btn btn-default btn-xs" for="filter_cost_1">1</label>
+              <label class="btn btn-default btn-xs" for="filter_cost_2">2</label>
+              <label class="btn btn-default btn-xs" for="filter_cost_3">3</label>
+              <label class="btn btn-default btn-xs" for="filter_cost_4">4</label>
+              <label class="btn btn-default btn-xs" for="filter_cost_5">5</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 filter">
+            <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_" value="">
+            <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_f" value="f">
+            <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_i" value="i">
+            <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_w" value="w">
+            <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_l" value="l">
+            <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_d" value="d">
+            <div class="btn-group btn-group-justified" role="group">
+              <label class="btn btn-default btn-xs" for="filter_attr_">全</label>
+              <label class="btn btn-default btn-xs" for="filter_attr_f">火</label>
+              <label class="btn btn-default btn-xs" for="filter_attr_i">氷</label>
+              <label class="btn btn-default btn-xs" for="filter_attr_w">風</label>
+              <label class="btn btn-default btn-xs" for="filter_attr_l">光</label>
+              <label class="btn btn-default btn-xs" for="filter_attr_d">闇</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 filter">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_" value="">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_p" value="p">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_m" value="m">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_d" value="d">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_h" value="h">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_s" value="s">
+            <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_b" value="b">
+            <div class="btn-group btn-group-justified" role="group">
+              <label class="btn btn-default btn-xs" for="filter_skill_">全</label>
+              <label class="btn btn-default btn-xs" for="filter_skill_p">物</label>
+              <label class="btn btn-default btn-xs" for="filter_skill_m">魔</label>
+              <label class="btn btn-default btn-xs" for="filter_skill_d">防</label>
+              <label class="btn btn-default btn-xs" for="filter_skill_h">治</label>
+              <label class="btn btn-default btn-xs" for="filter_skill_s">支</label>
+              <label class="btn btn-default btn-xs" for="filter_skill_b">妨</label>
+            </div>
+          </div>
+        </div>
+        <!-- div class="row">
+          <div class="col-xs-12 filter">
+            <div class="btn-group btn-group-justified" role="group">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-xs">デッキ削除</button>
+              </div>
+            </div>
+          </div>
+        </div -->
+        <div class="row">
+          <div class="col-xs-12 library" id="library">
+          </div>
+        </div>
       </div>
     </div>
   </div>
