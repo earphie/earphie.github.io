@@ -103,6 +103,9 @@
 .field input:checked + label {
   margin-top: 0;
 }
+.controls button, .controls .btn-group-vertical {
+  width: 100%;
+}
 .wind, .fire, .ice, .light, .dark {
   border-style: solid;
   border-width: 1px;
@@ -273,7 +276,8 @@ var M = {};
     $('#start_turn').on('click', M.startTurn);
     $('#draw1').on('click', function () { M.draw(1); });
     $('#draw5').on('click', function () { M.draw(5); });
-    $('#shuffle').on('click', M.shuffle);
+    $('#continue').on('click', M.shuffle);
+    $('#roundend').on('click', M.shuffle);
     $('#library').on('change', 'input', M.takeBook);
     for (c in CARDS) {
       $('#library').append(factory.newBook(c));
@@ -461,9 +465,9 @@ ga('send', 'pageview');
           <div class="col-xs-1">
             <h3>手札</h3>
           </div>
-          <div class="col-xs-9" id="hand_area">
+          <div class="col-xs-8 col-lg-9" id="hand_area">
           </div>
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-lg-2 controls">
             <button type="button" class="btn btn-default" id="start_turn">戦闘開始</button>
           </div>
         </div>
@@ -471,9 +475,9 @@ ga('send', 'pageview');
           <div class="col-xs-1">
             <h3>山札</h3>
           </div>
-          <div class="col-xs-9" id="deck_area">
+          <div class="col-xs-8 col-lg-9" id="deck_area">
           </div>
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-lg-2 controls">
             <div class="btn-group-vertical" role="group">
               <button type="button" class="btn btn-default" id="draw5">全補充</button>
               <button type="button" class="btn btn-default" id="draw1">ドロー</button>
@@ -484,10 +488,13 @@ ga('send', 'pageview');
           <div class="col-xs-1">
             <h3>捨札</h3>
           </div>
-          <div class="col-xs-9" id="trash_area">
+          <div class="col-xs-8 col-lg-9" id="trash_area">
           </div>
-          <div class="col-xs-2">
-            <button type="button" class="btn btn-default" id="shuffle">リセット</button>
+          <div class="col-xs-3 col-lg-2 controls">
+            <div class="btn-group-vertical" role="group">
+              <button type="button" class="btn btn-default" id="continue">コンテニュー</button>
+              <button type="button" class="btn btn-default" id="roundend">ラウンド終了</button>
+            </div>
           </div>
         </div>
         <div id="field" class="field">
@@ -497,7 +504,7 @@ ga('send', 'pageview');
           <h3>トラッカーとして使う場合</h3>
           <ol>
             <li>右のカード一覧から 10 枚選んで、ゲーム内と同じデッキを作ります。</li>
-            <li>ゲーム内で起きたことを下記の手順でトラッキングすることで、各カードの状態を把握することができます。
+            <li>ゲーム内で起きたことを下記の手順で再現することで、各カードの状態を把握することができます。
             <dl>
               <dt>クエスト開始直後</dt>
               <dd>ゲーム内で引いた 5 枚のカードを山札から選び、「全補充」ボタンを押します。</dd>
@@ -506,8 +513,10 @@ ga('send', 'pageview');
               <dt>ドロー後</dt>
               <dd>実際にドローしたカードを山札または捨札の中から選び、ドローした枚数分「ドロー」ボタンを押します。
                 <ul><li>「全補充」ボタンは手札が 5 枚になるまでドローボタンを押すのと同じ効果です。</li></ul></dd>
-              <dt>ラウンド移動後またはコンテニュー後</dt>
-              <dd>「リセット」ボタンを押します。</dd>
+              <dt>コンテニュー時</dt>
+              <dd>「コンテニュー」ボタンを押します。</dd>
+              <dt>ラウンド終了時（曜日、通常など複数ラウンドがあるクエストのみ）</dt>
+              <dd>「ラウンド終了」ボタンを押します。</dd>
             </dl></li>
           </ol>
           <h3>シミュレータとして使う場合</h3>
