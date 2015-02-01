@@ -159,11 +159,21 @@
 #trash_area {
   height: 10em;
 }
+#deck_url {
+  background-color: inherit;
+  cursor: default;
+}
 </style>
 
 <script type="text/javascript">
 var M = {};
 (function (M, $, CARDS) {
+  var getQuery = function (name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
   var factory = (function () {
     var attrs, skills, atypes;
     atypes = { a: "傭", b: "富", c: "盗", d: "歌", z: "他" };
@@ -200,6 +210,23 @@ var M = {};
     };
   })();
 
+  M.updateUrl = function () {
+    var url = window.location.origin + window.location.pathname,
+        decks = $('#field .card').map(function () {
+          return $(this).find('input').attr('id').slice(5);
+        }).get();
+    if (0 < decks.length) {
+      url += '?deck=' + decks.join(',');
+    }
+    $('#deck_url').val(url);
+  }
+
+  M.restoreDeck = function () {
+    $.each(getQuery('deck').split(','), function (_i, cid) {
+      $(document.getElementById('book-' + cid)).prop('checked', true).trigger('change');
+    });
+  }
+
   M.updateField = function () {
     var moveCards = function ($targets, $area) {
       $targets.css('top', $area.position().top + 'px');
@@ -213,23 +240,23 @@ var M = {};
         return ($area.position().left + 15 + i*sp) + 'px';
       });
     }
-    moveCards($('div.field > .hand'), $('#hand_area'));
-    moveCards($('div.field > .deck'), $('#deck_area'));
-    moveCards($('div.field > .trash'), $('#trash_area'));
+    moveCards($('#field > .hand'), $('#hand_area'));
+    moveCards($('#field > .deck'), $('#deck_area'));
+    moveCards($('#field > .trash'), $('#trash_area'));
   };
 
   M.startTurn = function () {
-    $('div.field > div.hand:has(input[name="cards"]:checked)').each(function () {
+    $('#field > div.hand:has(input[name="cards"]:checked)').each(function () {
       $(this).removeClass('hand').addClass('trash').find('input[name="cards"]').prop('checked', false);
     });
     M.updateField();
   };
 
   M.draw = function (count) {
-    if (5 <= $('div.field > div.hand').length) return;
+    if (5 <= $('#field > div.hand').length) return;
     if (count <= 0) return;
 
-    $selected = $('div.field > div.deck:has(input[name="cards"]:checked)');
+    $selected = $('#field > div.deck:has(input[name="cards"]:checked)');
     if (0 < $selected.length) {
       $selected.eq(Math.floor(Math.random() * $selected.length))
         .removeClass('deck').addClass('hand').find('input[name="cards"]').prop('checked', false);
@@ -237,9 +264,9 @@ var M = {};
       return setTimeout(M.draw, 250, count - 1);
     }
 
-    $deck = $('div.field > div.deck');
+    $deck = $('#field > div.deck');
     if ($deck.length <= 0) {
-      if ($('div.field > div.trash').length <= 0) return;
+      if ($('#field > div.trash').length <= 0) return;
       M.shuffle();
       return setTimeout(M.draw, 250, count);
     }
@@ -252,22 +279,22 @@ var M = {};
   };
 
   M.shuffle = function () {
-    $('div.field > div.trash').each(function () {
+    $('#field > div.trash').each(function () {
       $(this).removeClass('trash').addClass('deck');
     });
     M.updateField();
   };
 
-  M.takeBook = function (ev) {
-    var $cards, cid;
-    $cards = $('#field').find('div.card');
-    cid = $(this).attr('id').slice(5);
+  M.takeBook = function () {
+    var $cards = $('#field').find('div.card'),
+        cid = $(this).attr('id').slice(5);
     if ($(this).prop('checked')) {
-      if (10 <= $cards.length) { $(this).prop('checked', false); return false; }
+      if (10 <= $cards.length) { return $(this).prop('checked', false); }
       $('#field').append(factory.newCard(cid));
     } else {
       $('#card-' + cid).parent().remove();
     }
+    M.updateUrl();
     M.updateField();
   }
 
@@ -279,9 +306,13 @@ var M = {};
     $('#continue').on('click', M.shuffle);
     $('#roundend').on('click', M.shuffle);
     $('#library').on('change', 'input', M.takeBook);
+    $('#deck_url').on('focus', function () { $(this).select(); });
+    $('#deck_url_refresh').on('click', function () { window.location = $('#deck_url').val(); });
     for (c in CARDS) {
       $('#library').append(factory.newBook(c));
     }
+    M.restoreDeck();
+    M.updateUrl();
   });
 })(M, jQuery, {
   a1fs0: "第二型マロース",
@@ -290,8 +321,8 @@ var M = {};
   a2fm0: "ヴァンニク",
   a2fp0: "第二型バグデマグス",
   a2fs0: "支援型イテール",
-  a2ip1: "奏楽型ウアサハ",
   a2ip0: "特異型ナージェジタ",
+  a2ip1: "奏楽型ウアサハ",
   a2lp0: "第二型グロマーソマージョア",
   a2lp1: "新春型アーサー　剣術の城（傭兵）",
   a2wp0: "教練型ケイ",
@@ -300,8 +331,8 @@ var M = {};
   a3fs0: "第二型クラッキー",
   a3ip0: "聖夜型ニムエ（傭兵）",
   a3ip1: "新春型オイフェ",
-  a3lp1: "華恋型ベディヴィア",
   a3lp0: "第二型ローエングリン",
+  a3lp1: "華恋型ベディヴィア",
   a3wm0: "争杯型聖杯のエレイン",
   a3wp0: "蹴球型リトルグレイ",
   a3wp0: "特殊型ゴルロイス",
@@ -336,13 +367,13 @@ var M = {};
   b3dp1: "第二型トリストラム",
   b3fd0: "新春型クーホリン",
   b3fp0: "外敵型バン",
-  b3ip1: "ケルピー",
   b3ip0: "特異型シグルーン",
+  b3ip1: "ケルピー",
   b3is0: "第二型トール",
+  b3wb0: "特異型ロビンフッド",
   b3wp0: "支援型エニ―ド",
   b3wp1: "聖夜型傭兵アーサー",
   b3wp2: "歌姫型グィネヴィア",
-  b3wb0: "特異型ロビンフッド",
   b4fp0: "第二型マルク",
   b4fp1: "華恋型パーシヴァル",
   b4id0: "第二型タークィン",
@@ -362,10 +393,10 @@ var M = {};
   c2db1: "支援型金髪のイゾルデ",
   c2dm0: "華恋型リトルグレイ",
   c2ds0: "蹴球型バーナード",
-  c2fm1: "聖夜型ニムエ（盗賊）",
   c2fm0: "第二型ラモラック",
-  c2im1: "聖夜型ダーマス",
+  c2fm1: "聖夜型ニムエ（盗賊）",
   c2im0: "支援型ブリーセン",
+  c2im1: "聖夜型ダーマス",
   c2lm0: "新春型リーフェ（盗賊）",
   c2ls0: "聖夜型ゴットフリート",
   c2wb0: "第二型バーナード",
@@ -375,11 +406,11 @@ var M = {};
   c3dm0: "特異型卑弥呼",
   c3dm1: "帰化型ニムエ",
   c3fm0: "支援型白手のイゾルデ",
-  c3ib2: "第二型ガレス",
   c3ib0: "ペッグパウラー",
   c3ib1: "ハルダーフォーク",
-  c3im1: "争杯型パーシヴァル",
+  c3ib2: "第二型ガレス",
   c3im0: "第二型パーシヴァル",
+  c3im1: "争杯型パーシヴァル",
   c3lb0: "新春型歌姫アーサー",
   c3lm0: "新春型シグルーン",
   c3wm0: "支援型リネット",
@@ -405,9 +436,9 @@ var M = {};
   d2ih1: "聖夜型コンスタンティン",
   d2ih3: "新春型ガヘリス",
   d2lh0: "支援型エヴェイン",
-  d2lm2: "新春型リーフェ（歌姫）",
-  d2lm1: "第二型カルディス",
   d2lm0: "第二型テルラムント",
+  d2lm1: "第二型カルディス",
+  d2lm2: "新春型リーフェ（歌姫）",
   d2wh0: "トム／サム",
   d3dm0: "第二型ゴットフリート",
   d3ds0: "新春型イテール",
@@ -416,11 +447,11 @@ var M = {};
   d3id0: "第二型アイアンサイド",
   d3im0: "支援型ブランクウェイン",
   d3lh0: "制御型ベディヴィア",
+  d3lh1: "第二型ベイラン",
   d3lh2: "特異型リトルグレイ",
   d3lh3: "ピクシー",
-  d3lh1: "第二型ベイラン",
-  d3wh1: "華恋型ヴァレンタイン",
   d3wh0: "聖夜型リネット",
+  d3wh1: "華恋型ヴァレンタイン",
   d3ws0: "第二型ガーロン",
   d4dh0: "グルアガッハ",
   d4lh0: "支援型オルトリート",
@@ -430,8 +461,8 @@ var M = {};
   d5fh0: "複製型ウアサハ（歌姫）",
   d5fs0: "支援型クレア",
   d5id0: "制圧型ローエングリン",
-  d5lh1: "制圧型エニード",
   d5lh0: "シアナ",
+  d5lh1: "制圧型エニード",
 
   z2lh0: "警備用駆骨（光）",
 });
@@ -500,36 +531,56 @@ ga('send', 'pageview');
         <div id="field" class="field">
         </div>
         <div class="row">
-          <h2>簡易説明</h2>
-          <h3>トラッカーとして使う場合</h3>
-          <ol>
-            <li>右のカード一覧から 10 枚選んで、ゲーム内と同じデッキを作ります。</li>
-            <li>ゲーム内で起きたことを下記の手順で再現することで、各カードの状態を把握することができます。
-            <dl>
-              <dt>クエスト開始直後</dt>
-              <dd>ゲーム内で引いた 5 枚のカードを山札から選び、「全補充」ボタンを押します。</dd>
-              <dt>手札プレイ後</dt>
-              <dd>ゲーム内でプレイしたカードを手札から選び、「戦闘開始」ボタンを押します。</dd>
-              <dt>ドロー後</dt>
-              <dd>実際にドローしたカードを山札または捨札の中から選び、ドローした枚数分「ドロー」ボタンを押します。
-                <ul><li>「全補充」ボタンは手札が 5 枚になるまでドローボタンを押すのと同じ効果です。</li></ul></dd>
-              <dt>コンテニュー時</dt>
-              <dd>「コンテニュー」ボタンを押します。</dd>
-              <dt>ラウンド終了時（曜日、通常など複数ラウンドがあるクエストのみ）</dt>
-              <dd>「ラウンド終了」ボタンを押します。</dd>
-            </dl></li>
-          </ol>
-          <h3>シミュレータとして使う場合</h3>
-          <ul>
-            <li>トラッカーとして使う場合とほぼ同じです。</li>
-            <li>ドローする際に山札や捨札を選ばずに「ドロー」や「全補充」ボタンを押すとランダムにカードが選択されるので、実際にどのような動きをするのかシミュレーションしてみることができます。</li>
-          </ul>
-          <h2>実装したいと思っている機能</h2>
-          <ul>
-            <li>カード全一覧のフィルタリング</li>
-            <li>作成したデッキを表すURL生成</li>
-            <li>コストのトラッキング</li>
-          </ul>
+          <div class="col-xs-12 form-horizontal">
+            <div class="form-group">
+              <label for="deck_url" class="col-sm-4 col-md-3 col-lg-2 control-label">このデッキのURL</label>
+              <div class="col-sm-8 col-md-9 col-lg-10">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="deck_url" readonly="readonly">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" id="deck_url_refresh"><span class="glyphicon glyphicon-refresh"></span></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <h2>簡易説明</h2>
+            <ul>
+              <li><a href="http://portal.million-arthurs.com/kairi/">乖離性ミリオンアーサー</a>のクエスト中のカード状態を把握したり、デッキの動きをシミュレーションしてみるためのツールです。</li>
+              <li>PC ブラウザの Chrome もしくは Firefox 最新版でお使いください。</li>
+            </ul>
+            <h3>トラッカーとして使う場合</h3>
+            <ol>
+              <li>右のカード一覧から 10 枚選んで、ゲーム内と同じデッキを作ります。</li>
+              <li>ゲーム内で起きたことを下記の手順で再現することで、各カードの状態を把握することができます。
+              <dl>
+                <dt>クエスト開始直後</dt>
+                <dd>ゲーム内で引いた 5 枚のカードを山札から選び、「全補充」ボタンを押します。</dd>
+                <dt>手札プレイ後</dt>
+                <dd>ゲーム内でプレイしたカードを手札から選び、「戦闘開始」ボタンを押します。</dd>
+                <dt>ドロー後</dt>
+                <dd>実際にドローしたカードを山札または捨札の中から選び、ドローした枚数分「ドロー」ボタンを押します。
+                  <ul><li>「全補充」ボタンは手札が 5 枚になるまでドローボタンを押すのと同じ効果です。</li></ul></dd>
+                <dt>コンテニュー時</dt>
+                <dd>「コンテニュー」ボタンを押します。</dd>
+                <dt>ラウンド終了時（曜日、通常など複数ラウンドがあるクエストのみ）</dt>
+                <dd>「ラウンド終了」ボタンを押します。</dd>
+              </dl></li>
+            </ol>
+            <h3>シミュレータとして使う場合</h3>
+            <ul>
+              <li>トラッカーとして使う場合とほぼ同じです。</li>
+              <li>ドローする際に山札や捨札を選ばずに「ドロー」や「全補充」ボタンを押すとランダムにカードが選択されるので、実際にどのような動きをするのかシミュレーションしてみることができます。</li>
+            </ul>
+            <h2>実装したいと思っている機能</h2>
+            <ul>
+              <li>カード全一覧のフィルタリング</li>
+              <li>コストのトラッキング</li>
+            </ul>
+          </div>
         </div>
       </div>
       <div id="library" class="col-xs-3 library">
