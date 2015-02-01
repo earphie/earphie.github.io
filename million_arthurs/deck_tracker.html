@@ -30,6 +30,7 @@
 }
 .field .skill-marker {
   position: relative;
+  top: -16px;
   top: calc(-1em - 2px);
   left: 0px;
   height: 1.5em;
@@ -59,6 +60,7 @@
   text-align: left;
   float: left;
   height: 1.5em;
+  width: 66%;
   width: calc(100% - 3.6em);
   overflow: hidden;
 }
@@ -175,6 +177,10 @@
 #filter input {
   display: none;
 }
+
+#tpl_card {
+  display: none;
+}
 </style>
 
 <script type="text/javascript">
@@ -196,7 +202,8 @@ var M = {};
       newCard: function (cid) {
         var name = CARDS[cid];
         if (!name) { return $(); }
-        return $($('#tpl_card')[0].content)
+        return $('#tpl_card')
+          .children()
           .clone()
           .find('input').attr('id', 'card-' + cid).attr('name', 'cards').end()
           .find('label').addClass(attrs[cid[2]]).attr('for', 'card-' + cid).attr('title', name)
@@ -209,7 +216,8 @@ var M = {};
       newBook: function (cid) {
         var name = CARDS[cid];
         if (!name) { return $(); }
-        return $($('#tpl_card')[0].content)
+        return $('#tpl_card')
+          .children()
           .clone()
           .find('input').attr('id', 'book-' + cid).attr('name', 'books').end()
           .find('label').addClass(attrs[cid[2]]).attr('for', 'book-' + cid).attr('title', name)
@@ -331,10 +339,10 @@ var M = {};
 
   M.applyFilter = function () {
     var
-      type = $('input[name="filter_type"]:checked').val(),
-      cost = $('input[name="filter_cost"]:checked').val(),
-      attr = $('input[name="filter_attr"]:checked').val(),
-      skill = $('input[name="filter_skill"]:checked').val(),
+      type = $('input[name="filter_type"]:checked').val() || '.',
+      cost = $('input[name="filter_cost"]:checked').val() || '.',
+      attr = $('input[name="filter_attr"]:checked').val() || '.',
+      skill = $('input[name="filter_skill"]:checked').val() || '.',
       rx = new RegExp("^book-" + type + cost + attr + skill + ".$");
     $('#library div.card').each(function () {
       $(this).toggle(rx.exec($(this).find('input').attr('id')) != null);
@@ -535,7 +543,7 @@ ga('send', 'pageview');
 </script>
 </head>
 <body>
-  <template id="tpl_card">
+  <div id="tpl_card">
     <div class="card deck">
       <input type="checkbox">
       <label>
@@ -545,7 +553,7 @@ ga('send', 'pageview');
         <div class="skill-marker"></div>
       </label>
     </div>
-  </template>
+  </div>
   <div class="container">
     <h1>乖離性ミリオンアーサー デッキトラッカー＆シミュレータ</h1>
     <div class="row">
