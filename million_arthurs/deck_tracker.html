@@ -174,7 +174,7 @@ var M = {};
         return $($('#tpl_card')[0].content)
           .clone()
           .find('input').attr('id', 'card-' + cid).attr('name', 'cards').end()
-          .find('label').addClass(attrs[cid[2]]).attr('for', 'card-' + cid)
+          .find('label').addClass(attrs[cid[2]]).attr('for', 'card-' + cid).attr('title', name)
           .find('.type-marker').text(atypes[cid[0]]).end()
           .find('.cost-marker').text(cid[1]).end()
           .find('.skill-marker').text(skills[cid[3]]).end()
@@ -187,7 +187,7 @@ var M = {};
         return $($('#tpl_card')[0].content)
           .clone()
           .find('input').attr('id', 'book-' + cid).attr('name', 'books').end()
-          .find('label').addClass(attrs[cid[2]]).attr('for', 'book-' + cid)
+          .find('label').addClass(attrs[cid[2]]).attr('for', 'book-' + cid).attr('title', name)
           .find('.type-marker').text(atypes[cid[0]]).end()
           .find('.cost-marker').text(cid[1]).end()
           .find('.skill-marker').text(skills[cid[3]]).end()
@@ -198,15 +198,21 @@ var M = {};
   })();
 
   M.updateField = function () {
-    $('div.field > .hand')
-      .css('top', $('#hand_area').position().top + 'px')
-      .css('left', function (i) { return 'calc(' + $('#hand_area').position().left + 'px + ' + i*4.5 + 'em)' });
-    $('div.field > .deck')
-      .css('top', $('#deck_area').position().top + 'px')
-      .css('left', function (i) { return 'calc(' + $('#deck_area').position().left + 'px + ' + i*4.5 + 'em)' });
-    $('div.field > .trash')
-      .css('top', $('#trash_area').position().top + 'px')
-      .css('left', function (i) { return 'calc(' + $('#trash_area').position().left + 'px + ' + i*4.5 + 'em)' });
+    var moveCards = function ($targets, $area) {
+      $targets.css('top', $area.position().top + 'px');
+      // 15px: col-xx-n's padding-left
+      // 14px: about 1em
+      if ($targets.length <= 1) { return $targets.css('left', ($area.position().left + 15) + 'px'); }
+      var sw = $targets.first().width(),
+          bw = $area.width(),
+          sp = Math.min((bw - sw)/($targets.length - 1), sw + 14);
+      $targets.css('left', function (i) {
+        return ($area.position().left + 15 + i*sp) + 'px';
+      });
+    }
+    moveCards($('div.field > .hand'), $('#hand_area'));
+    moveCards($('div.field > .deck'), $('#deck_area'));
+    moveCards($('div.field > .trash'), $('#trash_area'));
   };
 
   M.startTurn = function () {
