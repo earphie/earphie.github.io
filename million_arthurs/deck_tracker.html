@@ -557,7 +557,7 @@ ga('send', 'pageview');
   <div class="container">
     <h1>乖離性ミリオンアーサー デッキトラッカー＆シミュレータ</h1>
     <div class="row">
-      <div class="col-xs-9">
+      <div class="col-md-12 col-lg-9">
         <div class="row">
           <div class="col-xs-1">
             <h3>手札</h3>
@@ -622,40 +622,8 @@ ga('send', 'pageview');
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <h2>簡易説明</h2>
-            <ul>
-              <li><a href="http://portal.million-arthurs.com/kairi/">乖離性ミリオンアーサー</a>のクエスト中のカード状態を把握したり、デッキの動きをシミュレーションしてみるためのツールです。</li>
-              <li>PC ブラウザの Chrome もしくは Firefox 最新版でお使いください。</li>
-            </ul>
-            <h3>トラッカーとして使う場合</h3>
-            <ol>
-              <li>右のカード一覧から 10 枚選んで、ゲーム内と同じデッキを作ります。</li>
-              <li>ゲーム内で起きたことを下記の手順で再現することで、各カードの状態を把握することができます。
-              <dl>
-                <dt>クエスト開始直後</dt>
-                <dd>ゲーム内で引いた 5 枚のカードを山札から選び、「全補充」ボタンを押します。</dd>
-                <dt>手札プレイ後</dt>
-                <dd>ゲーム内でプレイしたカードを手札から選び、「戦闘開始」ボタンを押します。</dd>
-                <dt>ドロー後</dt>
-                <dd>実際にドローしたカードを山札または捨札の中から選び、ドローした枚数分「ドロー」ボタンを押します。
-                  <ul><li>「全補充」ボタンは手札が 5 枚になるまでドローボタンを押すのと同じ効果です。</li></ul></dd>
-                <dt>コンテニュー時</dt>
-                <dd>「コンテニュー」ボタンを押します。</dd>
-                <dt>ラウンド終了時（曜日、通常など複数ラウンドがあるクエストのみ）</dt>
-                <dd>「ラウンド終了」ボタンを押します。</dd>
-              </dl></li>
-            </ol>
-            <h3>シミュレータとして使う場合</h3>
-            <ul>
-              <li>トラッカーとして使う場合とほぼ同じです。</li>
-              <li>ドローする際に山札や捨札を選ばずに「ドロー」や「全補充」ボタンを押すとランダムにカードが選択されるので、実際にどのような動きをするのかシミュレーションしてみることができます。</li>
-            </ul>
-          </div>
-        </div>
       </div>
-      <div class="col-xs-3">
+      <div class="col-md-4 col-md-push-8 col-lg-3 col-lg-push-0">
         <div class=".filter" id="filter">
           <div class="row">
             <div class="col-xs-12">
@@ -666,12 +634,12 @@ ga('send', 'pageview');
               <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_d" value="d">
               <input type="radio" name="filter_type" class="btn btn-default" id="filter_type_z" value="z">
               <div class="btn-group btn-group-justified" role="group">
-                <label class="btn btn-default btn-xs active" for="filter_type_">全</label>
-                <label class="btn btn-default btn-xs" for="filter_type_a">傭</label>
-                <label class="btn btn-default btn-xs" for="filter_type_b">富</label>
-                <label class="btn btn-default btn-xs" for="filter_type_c">盗</label>
-                <label class="btn btn-default btn-xs" for="filter_type_d">歌</label>
-                <label class="btn btn-default btn-xs" for="filter_type_z">他</label>
+                <label class="btn btn-default active" for="filter_type_">全</label>
+                <label class="btn btn-default" for="filter_type_a">傭</label>
+                <label class="btn btn-default" for="filter_type_b">富</label>
+                <label class="btn btn-default" for="filter_type_c">盗</label>
+                <label class="btn btn-default" for="filter_type_d">歌</label>
+                <label class="btn btn-default" for="filter_type_z">他</label>
               </div>
             </div>
           </div>
@@ -684,12 +652,12 @@ ga('send', 'pageview');
               <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_4" value="4">
               <input type="radio" name="filter_cost" class="btn btn-default" id="filter_cost_5" value="5">
               <div class="btn-group btn-group-justified" role="group">
-                <label class="btn btn-default btn-xs active" for="filter_cost_">全</label>
-                <label class="btn btn-default btn-xs" for="filter_cost_1">1</label>
-                <label class="btn btn-default btn-xs" for="filter_cost_2">2</label>
-                <label class="btn btn-default btn-xs" for="filter_cost_3">3</label>
-                <label class="btn btn-default btn-xs" for="filter_cost_4">4</label>
-                <label class="btn btn-default btn-xs" for="filter_cost_5">5</label>
+                <label class="btn btn-default active" for="filter_cost_">全</label>
+                <label class="btn btn-default" for="filter_cost_1">1</label>
+                <label class="btn btn-default" for="filter_cost_2">2</label>
+                <label class="btn btn-default" for="filter_cost_3">3</label>
+                <label class="btn btn-default" for="filter_cost_4">4</label>
+                <label class="btn btn-default" for="filter_cost_5">5</label>
               </div>
             </div>
           </div>
@@ -702,12 +670,12 @@ ga('send', 'pageview');
               <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_l" value="l">
               <input type="radio" name="filter_attr" class="btn btn-default" id="filter_attr_d" value="d">
               <div class="btn-group btn-group-justified" role="group">
-                <label class="btn btn-default btn-xs active" for="filter_attr_">全</label>
-                <label class="btn btn-default btn-xs" for="filter_attr_f">火</label>
-                <label class="btn btn-default btn-xs" for="filter_attr_i">氷</label>
-                <label class="btn btn-default btn-xs" for="filter_attr_w">風</label>
-                <label class="btn btn-default btn-xs" for="filter_attr_l">光</label>
-                <label class="btn btn-default btn-xs" for="filter_attr_d">闇</label>
+                <label class="btn btn-default active" for="filter_attr_">全</label>
+                <label class="btn btn-default" for="filter_attr_f">火</label>
+                <label class="btn btn-default" for="filter_attr_i">氷</label>
+                <label class="btn btn-default" for="filter_attr_w">風</label>
+                <label class="btn btn-default" for="filter_attr_l">光</label>
+                <label class="btn btn-default" for="filter_attr_d">闇</label>
               </div>
             </div>
           </div>
@@ -721,13 +689,13 @@ ga('send', 'pageview');
               <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_s" value="s">
               <input type="radio" name="filter_skill" class="btn btn-default" id="filter_skill_b" value="b">
               <div class="btn-group btn-group-justified" role="group">
-                <label class="btn btn-default btn-xs active" for="filter_skill_">全</label>
-                <label class="btn btn-default btn-xs" for="filter_skill_p">物</label>
-                <label class="btn btn-default btn-xs" for="filter_skill_m">魔</label>
-                <label class="btn btn-default btn-xs" for="filter_skill_d">守</label>
-                <label class="btn btn-default btn-xs" for="filter_skill_h">治</label>
-                <label class="btn btn-default btn-xs" for="filter_skill_s">支</label>
-                <label class="btn btn-default btn-xs" for="filter_skill_b">妨</label>
+                <label class="btn btn-default active" for="filter_skill_">全</label>
+                <label class="btn btn-default" for="filter_skill_p">物</label>
+                <label class="btn btn-default" for="filter_skill_m">魔</label>
+                <label class="btn btn-default" for="filter_skill_d">守</label>
+                <label class="btn btn-default" for="filter_skill_h">治</label>
+                <label class="btn btn-default" for="filter_skill_s">支</label>
+                <label class="btn btn-default" for="filter_skill_b">妨</label>
               </div>
             </div>
           </div>
@@ -745,6 +713,36 @@ ga('send', 'pageview');
           <div class="col-xs-12 library" id="library">
           </div>
         </div>
+      </div>
+      <div class="col-md-8 col-md-pull-4 col-lg-9 col-lg-pull-0">
+        <h2>簡易説明</h2>
+        <ul>
+          <li><a href="http://portal.million-arthurs.com/kairi/">乖離性ミリオンアーサー</a>のクエスト中のカード状態を把握したり、デッキの動きをシミュレーションしてみるためのツールです。</li>
+          <li>PC ブラウザの Chrome もしくは Firefox 最新版でお使いください。</li>
+        </ul>
+        <h3>トラッカーとして使う場合</h3>
+        <ol>
+          <li>右のカード一覧から 10 枚選んで、ゲーム内と同じデッキを作ります。</li>
+          <li>ゲーム内で起きたことを下記の手順で再現することで、各カードの状態を把握することができます。
+          <dl>
+            <dt>クエスト開始直後</dt>
+            <dd>ゲーム内で引いた 5 枚のカードを山札から選び、「全補充」ボタンを押します。</dd>
+            <dt>手札プレイ後</dt>
+            <dd>ゲーム内でプレイしたカードを手札から選び、「戦闘開始」ボタンを押します。</dd>
+            <dt>ドロー後</dt>
+            <dd>実際にドローしたカードを山札または捨札の中から選び、ドローした枚数分「ドロー」ボタンを押します。
+              <ul><li>「全補充」ボタンは手札が 5 枚になるまでドローボタンを押すのと同じ効果です。</li></ul></dd>
+            <dt>コンテニュー時</dt>
+            <dd>「コンテニュー」ボタンを押します。</dd>
+            <dt>ラウンド終了時（曜日、通常など複数ラウンドがあるクエストのみ）</dt>
+            <dd>「ラウンド終了」ボタンを押します。</dd>
+          </dl></li>
+        </ol>
+        <h3>シミュレータとして使う場合</h3>
+        <ul>
+          <li>トラッカーとして使う場合とほぼ同じです。</li>
+          <li>ドローする際に山札や捨札を選ばずに「ドロー」や「全補充」ボタンを押すとランダムにカードが選択されるので、実際にどのような動きをするのかシミュレーションしてみることができます。</li>
+        </ul>
       </div>
     </div>
   </div>
