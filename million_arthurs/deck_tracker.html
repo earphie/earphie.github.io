@@ -7,6 +7,9 @@
 <title>乖離性ミリオンアーサー デッキトラッカー</title>
 <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 <style type="text/css">
+.turn_cost {
+  text-align: center;
+}
 .field div, .field label, .library div, .library label {
   box-sizing: border-box;
   text-align: center;
@@ -235,6 +238,22 @@ var M = {};
     });
   }
 
+  M.updateCost = function () {
+    var sum = 0, max = Number($('#max_cost').text()), current;
+    $('#field > .hand input[name="cards"]:checked').each(function () {
+      sum += Number($(this).parent().find('.cost-marker').text());
+    });
+    current = max - sum;
+    $('#current_cost').text(current).css('color', function () {
+      if (0 <= current) { return 'inherit'; } else { return 'red'; }
+    });
+  }
+  M.resetCost = function () {
+    $('#current_turn').text(1);
+    $('#max_cost').text(3);
+    M.updateCost();
+  }
+
   M.updateField = function () {
     var moveCards = function ($targets, $area) {
       $targets.css('top', $area.position().top + 'px');
@@ -258,6 +277,9 @@ var M = {};
       $(this).removeClass('hand').addClass('trash').find('input[name="cards"]').prop('checked', false);
     });
     M.updateField();
+    $('#current_turn').text(Number($('#current_turn').text()) + 1);
+    $('#max_cost').text(Math.min(Number($('#max_cost').text()) + 1, 10));
+    M.updateCost();
   };
 
   M.draw = function (count) {
@@ -330,13 +352,15 @@ var M = {};
   // initialize
   $(function ($) {
     $('#start_turn').on('click', M.startTurn);
+    $('#reset_turn').on('click', M.resetCost);
     $('#draw1').on('click', function () { M.draw(1); });
     $('#draw5').on('click', function () { M.draw(5); });
     $('#continue').on('click', M.shuffle);
-    $('#roundend').on('click', M.shuffle);
+    $('#roundend').on('click', function () { M.shuffle(); M.resetCost(); });
     $('#library').on('change', 'input', M.takeBook);
     $('#deck_url').on('focus', function () { $(this).select(); });
     $('#deck_url_refresh').on('click', function () { window.location = $('#deck_url').val(); });
+    $('#field').on('change', '.hand input', M.updateCost);
     $('#filter').on('change', 'input', M.updateFilterButtons);
     $('#filter').on('change', 'input', M.applyFilter);
     for (c in CARDS) {
@@ -533,6 +557,21 @@ ga('send', 'pageview');
           </div>
           <div class="col-xs-3 col-lg-2 controls">
             <button type="button" class="btn btn-default" id="start_turn">戦闘開始</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-1">
+            <div class="well well-sm turn_cost">
+              <span id="current_turn">1</span>
+            </div>
+          </div>
+          <div class="col-xs-8 col-lg-9">
+            <div class="well well-sm turn_cost">
+              Cost: <span id="current_cost">3</span> / <span id="max_cost">3</span>
+            </div>
+          </div>
+          <div class="col-xs-3 col-lg-2 controls">
+            <button type="button" class="btn btn-default" id="reset_turn">リセット</button>
           </div>
         </div>
         <div class="row">
