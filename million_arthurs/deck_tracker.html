@@ -101,8 +101,19 @@
 .field input:checked + label {
   margin-top: 0;
 }
-.controls button, .controls .btn-group-vertical {
+.controls {
+  text-align: center;
+}
+.controls button {
   width: 100%;
+}
+.controls.controls2 button {
+  width: 49%;
+}
+@media (min-width: 1200px) {
+  .controls.controls2 button {
+    width: 100%;
+  }
 }
 .wind, .fire, .ice, .light, .dark {
   border-style: solid;
@@ -556,44 +567,42 @@ ga('send', 'pageview');
     <div class="row">
       <div class="col-xs-12 col-lg-9">
         <div class="row">
-          <div class="col-xs-1">
+          <div class="col-xs-2 col-lg-1">
             <h3>手札</h3>
           </div>
-          <div class="col-xs-11 col-lg-9" id="hand_area">
+          <div class="col-xs-10 col-lg-9" id="hand_area">
           </div>
-          <div class="col-xs-11 col-xs-offset-1 col-lg-2 col-lg-offset-0 controls">
+          <div class="col-xs-10 col-xs-offset-2 col-lg-2 col-lg-offset-0 controls">
             <button type="button" class="btn btn-default" id="start_turn">戦闘開始</button>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-11 col-xs-offset-1 col-lg-9">
-            <div class="well text-center">
+          <div class="col-xs-10 col-xs-offset-2 col-lg-9 col-lg-offset-1">
+            <div class="well well-sm text-center">
               Cost: <span id="current_cost">3</span> / <span id="max_cost">3</span>
               (Turn: <span id="current_turn">1</span>)
               <button type="button" class="btn btn-default btn-xs pull-right" id="reset_turn">初期化</button>
             </div>
           </div>
-          <div class="col-xs-11 col-xs-offset-1 col-lg-2 col-lg-offset-0 controls">
-          </div>
         </div>
         <div class="row">
-          <div class="col-xs-1">
+          <div class="col-xs-2 col-lg-1">
             <h3>山札</h3>
           </div>
-          <div class="col-xs-11 col-lg-9" id="deck_area">
+          <div class="col-xs-10 col-lg-9" id="deck_area">
           </div>
-          <div class="col-xs-11 col-xs-offset-1 col-lg-2 col-lg-offset-0 controls">
+          <div class="col-xs-10 col-xs-offset-2 col-lg-2 col-lg-offset-0 controls controls2">
             <button type="button" class="btn btn-default" id="draw1">ドロー</button>
             <button type="button" class="btn btn-default" id="draw5">全補充</button>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-1">
+          <div class="col-xs-2 col-lg-1">
             <h3>捨札</h3>
           </div>
-          <div class="col-xs-11 col-lg-9" id="trash_area">
+          <div class="col-xs-10 col-lg-9" id="trash_area">
           </div>
-          <div class="col-xs-11 col-xs-offset-1 col-lg-2 col-lg-offset-0 controls">
+          <div class="col-xs-10 col-xs-offset-2 col-lg-2 col-lg-offset-0 controls controls2">
             <button type="button" class="btn btn-default" id="continue">コンテニュー</button>
             <button type="button" class="btn btn-default" id="roundend">ラウンド終了</button>
           </div>
@@ -711,7 +720,6 @@ ga('send', 'pageview');
         <h2>簡易説明</h2>
         <ul>
           <li><a href="http://portal.million-arthurs.com/kairi/">乖離性ミリオンアーサー</a>のクエスト中のカード状態を把握したり、デッキの動きをシミュレーションしてみるためのツールです。</li>
-          <li>PC ブラウザの Chrome もしくは Firefox 最新版でお使いください。</li>
         </ul>
         <h3>トラッカーとして使う場合</h3>
         <ol>
