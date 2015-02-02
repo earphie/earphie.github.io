@@ -362,6 +362,13 @@ var M = {};
     $('#field').on('change', '.hand input', M.updateCost);
     $('#filter').on('change', 'input', M.updateFilterButtons);
     $('#filter').on('change', 'input', M.applyFilter);
+    $(window).on('resize', (function () {
+      var timer;
+      return function () {
+        if (!!timer) { clearTimeout(timer); }
+        timer = setTimeout(M.updateField, 500);
+      };
+    })());
     for (c in CARDS) {
       $('#library').append(factory.newBook(c));
     }
