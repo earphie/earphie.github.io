@@ -338,14 +338,19 @@ var M = {};
   }
 
   M.applyFilter = function () {
-    var
+    var indeck = true,
       type = $('input[name="filter_type"]:checked').val() || '.',
       cost = $('input[name="filter_cost"]:checked').val() || '.',
       attr = $('input[name="filter_attr"]:checked').val() || '.',
       skill = $('input[name="filter_skill"]:checked').val() || '.',
+      deck = $('input[name="filter_deck"]:checked').val() || '.',
       rx = new RegExp("^book-" + type + cost + attr + skill + ".$");
     $('#library div.card').each(function () {
-      $(this).toggle(rx.exec($(this).find('input').attr('id')) != null);
+      if (deck == 't' || deck == 'f') {
+        indeck = $(document.getElementById($(this).find('label').attr('for'))).is(':checked');
+        if (deck == 'f') { indeck = !indeck; }
+      }
+      $(this).toggle(rx.exec($(this).find('input').attr('id')) != null && indeck);
     });
   }
   M.updateFilterButtons = function () {
@@ -696,6 +701,18 @@ ga('send', 'pageview');
                 <label class="btn btn-default" for="filter_skill_h">治</label>
                 <label class="btn btn-default" for="filter_skill_s">支</label>
                 <label class="btn btn-default" for="filter_skill_b">妨</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <input type="radio" name="filter_deck" class="btn btn-default" id="filter_deck_" value="." checked="checked">
+              <input type="radio" name="filter_deck" class="btn btn-default" id="filter_deck_t" value="t">
+              <input type="radio" name="filter_deck" class="btn btn-default" id="filter_deck_f" value="f">
+              <div class="btn-group btn-group-justified" role="group">
+                <label class="btn btn-default active" for="filter_deck_">全</label>
+                <label class="btn btn-default" for="filter_deck_t">選択済</label>
+                <label class="btn btn-default" for="filter_deck_f">未選択</label>
               </div>
             </div>
           </div>
