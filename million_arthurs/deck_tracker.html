@@ -193,40 +193,28 @@ var M = {};
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
   var factory = (function () {
-    var attrs, skills, atypes;
+    var attrs, skills, atypes, newdom;
     atypes = { a: "傭", b: "富", c: "盗", d: "歌", z: "他" };
     skills = { p: "物", m: "魔", s: "支", h: "治", d: "守", b: "妨" };
     attrs = { f: "fire", i: "ice", w: "wind", l: "light", d: "dark" };
+    newdom = function (cid, prefix) {
+      var name = CARDS[cid];
+      if (!name) { return $(); }
+      return $('#tpl_card')
+        .children()
+        .clone()
+        .find('input').attr('id', prefix + '-' + cid).attr('name', 'cards').end()
+        .find('label').addClass(attrs[cid[2]]).attr('for', prefix + '-' + cid).attr('title', name)
+        .find('.type-marker').text(atypes[cid[0]]).end()
+        .find('.cost-marker').text(cid[1]).end()
+        .find('.skill-marker').text(skills[cid[3]]).end()
+        .find('.cbody').text(name).end()
+        .end();
+    };
 
     return {
-      newCard: function (cid) {
-        var name = CARDS[cid];
-        if (!name) { return $(); }
-        return $('#tpl_card')
-          .children()
-          .clone()
-          .find('input').attr('id', 'card-' + cid).attr('name', 'cards').end()
-          .find('label').addClass(attrs[cid[2]]).attr('for', 'card-' + cid).attr('title', name)
-          .find('.type-marker').text(atypes[cid[0]]).end()
-          .find('.cost-marker').text(cid[1]).end()
-          .find('.skill-marker').text(skills[cid[3]]).end()
-          .find('.cbody').text(name).end()
-          .end();
-      },
-      newBook: function (cid) {
-        var name = CARDS[cid];
-        if (!name) { return $(); }
-        return $('#tpl_card')
-          .children()
-          .clone()
-          .find('input').attr('id', 'book-' + cid).attr('name', 'books').end()
-          .find('label').addClass(attrs[cid[2]]).attr('for', 'book-' + cid).attr('title', name)
-          .find('.type-marker').text(atypes[cid[0]]).end()
-          .find('.cost-marker').text(cid[1]).end()
-          .find('.skill-marker').text(skills[cid[3]]).end()
-          .find('.cbody').text(name).end()
-          .end();
-      },
+      newCard: function (cid) { return newdom(cid, 'card'); },
+      newBook: function (cid) { return newdom(cid, 'book'); },
     };
   })();
 
