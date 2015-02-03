@@ -186,6 +186,8 @@
 <script type="text/javascript">
 var M = {};
 (function (M, $, CARDS) {
+  'use strict';
+
   var getQuery = function (name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -283,7 +285,7 @@ var M = {};
     if (5 <= $('#field > div.hand').length) return;
     if (count <= 0) return;
 
-    $selected = $('#field > div.deck:has(input[name="cards"]:checked)');
+    var $selected = $('#field > div.deck:has(input[name="cards"]:checked)');
     if (0 < $selected.length) {
       $selected.eq(Math.floor(Math.random() * $selected.length))
         .removeClass('deck').addClass('hand').find('input[name="cards"]').prop('checked', false);
@@ -291,7 +293,7 @@ var M = {};
       return setTimeout(M.draw, 250, count - 1);
     }
 
-    $deck = $('#field > div.deck');
+    var $deck = $('#field > div.deck');
     if ($deck.length <= 0) {
       if ($('#field > div.trash').length <= 0) return;
       M.shuffle();
@@ -371,7 +373,7 @@ var M = {};
         timer = setTimeout(M.updateField, 500);
       };
     })());
-    for (c in CARDS) {
+    for (var c in CARDS) {
       $('#library').append(factory.newBook(c));
     }
     M.restoreDeck();
