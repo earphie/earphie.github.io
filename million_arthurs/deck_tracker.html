@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 <title>乖離性ミリオンアーサー デッキトラッカー</title>
 <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <style type="text/css">
 .field div, .field label, .library div, .library label {
   box-sizing: border-box;
@@ -117,6 +118,9 @@
 }
 .extra-area {
   margin-top: 15px;
+}
+.extra-control {
+  padding: 0;
 }
 .wind, .fire, .ice, .light, .dark {
   border-style: solid;
@@ -274,14 +278,20 @@ var M = {};
     M.updateArea('trash');
   };
 
+  M.addTurn = function (n) {
+    n = n || 1;
+    $('#current_turn').text(Number($('#current_turn').text()) + n);
+    $('#max_cost').text(Math.min(Number($('#current_turn').text()) + 2, 10));
+    M.updateCost();
+  }
+  M.forceAddTurn = function () { M.addTurn(1); }
+  M.forceBackTurn = function () { M.addTurn(-1); }
   M.startTurn = function () {
     $('#field > div.hand:has(input[name="cards"]:checked)').each(function () {
       $(this).removeClass('hand').addClass('trash').find('input[name="cards"]').prop('checked', false);
     });
+    M.addTurn();
     M.updateField();
-    $('#current_turn').text(Number($('#current_turn').text()) + 1);
-    $('#max_cost').text(Math.min(Number($('#max_cost').text()) + 1, 10));
-    M.updateCost();
   };
 
   M.draw = function (count) {
@@ -379,14 +389,28 @@ var M = {};
     expander('trash');
   }
 
+  M.forceMove = function (area) {
+    $('#field > div:has(input[name="cards"]:checked)').each(function () {
+      $(this)
+        .removeClass('hand deck trash').addClass(area)
+        .find('input').prop('checked', false);
+    });
+    M.updateField();
+  }
+
   // initialize
   $(function ($) {
     $('#start_turn').on('click', M.startTurn);
-    $('#reset_turn').on('click', M.resetCost);
     $('#draw1').on('click', function () { M.draw(1); });
     $('#draw5').on('click', function () { M.draw(5); });
     $('#continue').on('click', M.shuffle);
     $('#roundend').on('click', function () { M.shuffle(); M.resetCost(); });
+    $('#force_move_to_hand').on('click', function () { M.forceMove('hand'); });
+    $('#force_move_to_deck').on('click', function () { M.forceMove('deck'); });
+    $('#force_move_to_trash').on('click', function () { M.forceMove('trash'); });
+    $('#force_add_turn').on('click', M.forceAddTurn);
+    $('#force_back_turn').on('click', M.forceBackTurn);
+    $('#reset_turn').on('click', M.resetCost);
     $('#library').on('change', 'input', M.takeBook);
     $('#deck_url_refresh').on('click', function () { M.updateUrl(); window.location = $('#deck_url').val(); });
     $('#field').on('change', '.hand input', M.updateCost);
@@ -610,7 +634,17 @@ ga('send', 'pageview');
             <div class="well well-sm text-center">
               Cost: <span id="current_cost">3</span> / <span id="max_cost">3</span>
               (Turn: <span id="current_turn">1</span>)
-              <button type="button" class="btn btn-default btn-xs pull-right" id="reset_turn">初期化</button>
+              <button type="button" data-toggle="dropdown" class="btn btn-default btn-xs pull-right dropdown-toggle">他操作 <span class="caret"></span></button>
+              <div class="dropdown-menu dropdown-menu-right extra-control">
+                <div class="btn-group-vertical" role="group">
+                  <button type="button" class="btn btn-default list-group-item" id="force_move_to_hand">選択したカードを手札へ移動</button>
+                  <button type="button" class="btn btn-default list-group-item" id="force_move_to_deck">選択したカードを山札へ移動</button>
+                  <button type="button" class="btn btn-default list-group-item" id="force_move_to_trash">選択したカードを捨札へ移動</button>
+                  <button type="button" class="btn btn-default list-group-item" id="force_add_turn">ターン数を 1 増やす</button>
+                  <button type="button" class="btn btn-default list-group-item" id="force_back_turn">ターン数を 1 減らす</button>
+                  <button type="button" class="btn btn-default list-group-item" id="reset_turn">ターン数を初期化する</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -765,7 +799,8 @@ ga('send', 'pageview');
             <li>テキストボックスの右についているボタンを押すと、該当の URL で画面を開きなおします。<strong>このとき手札捨札やターン情報などは全て初期化されます</strong>のでご注意ください（逆に言えばリセットボタンとして利用できます）。</li>
             <li>この URL をメモ（ブックマークなど）しておくと、デッキのカードが選択済みの状態を再現することができます。</li>
           </ul></li>
-          <li class="visible-xs">（モバイル端末のみ）山札や捨札の枚数が多くカードが重なってしまう場合、「山札」「捨札」と書かれたラベル部分を上下にスワイプするとカードをずらすことができます。戻すには同じラベルをタップします。</li>
+          <li>「他操作」には操作ミスを戻したりする場合に利用できるボタンが含まれていますが、手札を 6 枚以上にするなど、本来ありえない状態にしてしまうことも可能な点には注意してください。</li>
+          <li>（モバイル端末のみ）山札や捨札の枚数が多くカードが重なってしまう場合、「山札」「捨札」と書かれたラベル部分を上下にスワイプすることでカードをずらすことができます。戻すには同じラベルをタップします。</li>
         </ul>
         <h3>トラッカーとして使う場合</h3>
         <ol>
