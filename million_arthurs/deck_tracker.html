@@ -253,22 +253,25 @@ var M = {};
     M.updateCost();
   }
 
+  M.updateArea = function (area, di) {
+    var $targets = $('#field').children('.' + area);
+    var $area = $(document.getElementById(area + '_area'));
+    di = di || 0;
+    $targets.css('top', function (i) { return $area.position().top - di*(i%2) + ((i + 1)%2)*di });
+    // 15px: col-xx-n's padding-left
+    // 14px: about 1em
+    if ($targets.length <= 1) { return $targets.css('left', ($area.position().left + 15) + 'px'); }
+    var sw = $targets.first().width(),
+        bw = $area.width(),
+        sp = Math.min((bw - sw)/($targets.length - 1), sw + 14);
+    $targets.css('left', function (i) {
+      return ($area.position().left + 15 + i*sp) + 'px';
+    });
+  }
   M.updateField = function () {
-    var moveCards = function ($targets, $area) {
-      $targets.css('top', $area.position().top + 'px');
-      // 15px: col-xx-n's padding-left
-      // 14px: about 1em
-      if ($targets.length <= 1) { return $targets.css('left', ($area.position().left + 15) + 'px'); }
-      var sw = $targets.first().width(),
-          bw = $area.width(),
-          sp = Math.min((bw - sw)/($targets.length - 1), sw + 14);
-      $targets.css('left', function (i) {
-        return ($area.position().left + 15 + i*sp) + 'px';
-      });
-    }
-    moveCards($('#field > .hand'), $('#hand_area'));
-    moveCards($('#field > .deck'), $('#deck_area'));
-    moveCards($('#field > .trash'), $('#trash_area'));
+    M.updateArea('hand');
+    M.updateArea('deck');
+    M.updateArea('trash');
   };
 
   M.startTurn = function () {
@@ -353,6 +356,29 @@ var M = {};
     });
   }
 
+  M.initializeHandle = function () {
+    var expander = function (area) {
+      var y;
+      $(document.getElementById(area + '_handler')).on('touchstart', function (ev) {
+        ev.preventDefault();
+        y = ev.originalEvent.changedTouches[0].pageY;
+      }).on('touchmove', function (ev) {
+        ev.preventDefault();
+        var di = ev.originalEvent.changedTouches[0].pageY - y;
+        M.updateArea(area, di);
+      }).on('touchend', function (ev) {
+        ev.preventDefault();
+        var di = ev.originalEvent.changedTouches[0].pageY - y;
+        if (Math.abs(di) < 4) {
+          M.updateArea(area, 0);
+        }
+      });
+    }
+    expander('hand');
+    expander('deck');
+    expander('trash');
+  }
+
   // initialize
   $(function ($) {
     $('#start_turn').on('click', M.startTurn);
@@ -380,6 +406,7 @@ var M = {};
     M.updateFilterButtons();
     M.applyFilter();
     M.updateUrl();
+    M.initializeHandle();
   });
 })(M, jQuery, {
   a1fs0: "第二型マロース",
@@ -569,7 +596,7 @@ ga('send', 'pageview');
     <div class="row">
       <div class="col-xs-12 col-lg-9">
         <div class="row">
-          <div class="col-xs-2 col-lg-1">
+          <div class="col-xs-2 col-lg-1" id="hand_handler">
             <h3>手札</h3>
           </div>
           <div class="col-xs-10 col-lg-9" id="hand_area">
@@ -588,7 +615,7 @@ ga('send', 'pageview');
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-2 col-lg-1">
+          <div class="col-xs-2 col-lg-1" id="deck_handler">
             <h3>山札</h3>
           </div>
           <div class="col-xs-10 col-lg-9" id="deck_area">
@@ -599,7 +626,7 @@ ga('send', 'pageview');
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-2 col-lg-1">
+          <div class="col-xs-2 col-lg-1" id="trash_handler">
             <h3>捨札</h3>
           </div>
           <div class="col-xs-10 col-lg-9" id="trash_area">
@@ -738,6 +765,7 @@ ga('send', 'pageview');
             <li>テキストボックスの右についているボタンを押すと、該当の URL で画面を開きなおします。<strong>このとき手札捨札やターン情報などは全て初期化されます</strong>のでご注意ください（逆に言えばリセットボタンとして利用できます）。</li>
             <li>この URL をメモ（ブックマークなど）しておくと、デッキのカードが選択済みの状態を再現することができます。</li>
           </ul></li>
+          <li>（モバイル端末向け）山札や捨札の枚数が多くカードが重なってしまう場合、「山札」「捨札」と書かれたラベル部分を上下にスワイプするとカードをずらすことができます。戻すには同じラベルをタップします。</li>
         </ul>
         <h3>トラッカーとして使う場合</h3>
         <ol>
